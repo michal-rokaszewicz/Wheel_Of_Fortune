@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">My Application00</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ko_o_fortuny">Koło Fortuny</string>
+    <string name="start">Start</string>
+    <string name="kategoria">Kategoria</string>
+    <string name="word">word</string>
+    <string name="zakr">zakręć</string>
+    <string name="zatwierd">zatwierdź</string>
 </resources>
