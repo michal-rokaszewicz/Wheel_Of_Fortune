@@ -59,8 +59,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    //letters
-
     <Button
         android:id="@+id/LetterB"
         android:layout_width="47dp"
