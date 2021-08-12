@@ -61,8 +61,8 @@
 
     <Button
         android:id="@+id/LetterB"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="b"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,8 +72,8 @@
 
     <Button
         android:id="@+id/LetterC"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="c"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,8 +83,8 @@
 
     <Button
         android:id="@+id/LetterD"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="d"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,8 +94,8 @@
 
     <Button
         android:id="@+id/LetterF"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="f"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,8 +105,8 @@
 
     <Button
         android:id="@+id/LetterG"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="g"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,8 +116,8 @@
 
     <Button
         android:id="@+id/LetterH"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="h"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,8 +127,8 @@
 
     <Button
         android:id="@+id/LetterJ"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="164dp"
         android:text="j"
         app:layout_constraintEnd_toEndOf="parent"
@@ -138,8 +138,8 @@
 
     <Button
         android:id="@+id/LetterK"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="k"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,8 +149,8 @@
 
     <Button
         android:id="@+id/LetterL"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="l"
         app:layout_constraintEnd_toEndOf="parent"
@@ -160,8 +160,8 @@
 
     <Button
         android:id="@+id/LetterM"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="m"
         app:layout_constraintEnd_toEndOf="parent"
@@ -171,8 +171,8 @@
 
     <Button
         android:id="@+id/LetterN"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="n"
         app:layout_constraintEnd_toEndOf="parent"
@@ -182,8 +182,8 @@
 
     <Button
         android:id="@+id/LetterP"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="p"
         app:layout_constraintEnd_toEndOf="parent"
@@ -193,8 +193,8 @@
 
     <Button
         android:id="@+id/LetterR"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="224dp"
         android:text="r"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,8 +204,8 @@
 
     <Button
         android:id="@+id/LetterS"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="s"
         app:layout_constraintEnd_toEndOf="parent"
@@ -215,8 +215,8 @@
 
     <Button
         android:id="@+id/LetterT"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="t"
         app:layout_constraintEnd_toEndOf="parent"
@@ -226,8 +226,8 @@
 
     <Button
         android:id="@+id/LetterV"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="v"
         app:layout_constraintEnd_toEndOf="parent"
@@ -237,8 +237,8 @@
 
     <Button
         android:id="@+id/LetterW"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="w"
         app:layout_constraintEnd_toEndOf="parent"
@@ -248,8 +248,8 @@
 
     <Button
         android:id="@+id/LetterX"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="x"
         app:layout_constraintEnd_toEndOf="parent"
@@ -259,8 +259,8 @@
 
     <Button
         android:id="@+id/LetterZ"
-        android:layout_width="47dp"
-        android:layout_height="42dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="288dp"
         android:text="z"
         app:layout_constraintEnd_toEndOf="parent"
