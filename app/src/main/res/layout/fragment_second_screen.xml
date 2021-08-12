@@ -268,12 +268,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/pass"
-        android:layout_width="156dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="312dp"
+    <EditText
+        android:id="@+id/guessWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="304dp"
+        android:ems="10"
+        android:inputType="textPersonName"
         android:text="@string/zgadnij"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

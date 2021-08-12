@@ -27,4 +27,6 @@ class SecondScreenFragment : Fragment() {
             Navigation.findNavController(view).popBackStack()
         }
     }
+
+
 }
