@@ -1,11 +1,15 @@
 package com.example.myapplication00
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.ActivityMainBinding
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
@@ -14,6 +18,7 @@ import java.io.File
 class FirstScreenFragment : Fragment() {
     lateinit var binding: FragmentFirstScreenBinding
 
+    //file
     lateinit var path: File
     lateinit var folder: File
     lateinit var file: File
@@ -30,11 +35,24 @@ class FirstScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //check permissions
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val permissions = arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            // if is denied, ask for it
+            ActivityCompat.requestPermissions(this, permissions, 0)
+        }
+
         val button = binding.button
         val addNewWord = binding.addNewWord
         val newWord = binding.newWord
 
-        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         folder = File(path,"/KoloFortuny")
         file = File(folder, "/words.txt")
 
@@ -45,13 +63,13 @@ class FirstScreenFragment : Fragment() {
             Navigation.findNavController(binding.root).navigate(action)
         }
 
-        newWord.setOnClickListener {
+        addNewWord.setOnClickListener {
             var word: String = newWord.toString()
             file.appendText(word)
         }
     }
 
-    fun createFile(){
+    private fun createFile(){
         if(!folder.exists()) {
             folder.mkdir()
 
@@ -62,7 +80,7 @@ class FirstScreenFragment : Fragment() {
             var i: Int = 0
 
             while ( i < 10 ) {
-                file.appendText("${basicWords[i].first} \t ${basicWords[i].second} \n")
+                file.appendText("${basicWords[i].first}\t${basicWords[i].second} \n")
                 i++
             }
         }
