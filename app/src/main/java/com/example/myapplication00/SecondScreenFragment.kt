@@ -80,4 +80,5 @@ class SecondScreenFragment : Fragment() {
         }
         wCat = tmp
     }
+
 }

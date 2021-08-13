@@ -1,6 +1,7 @@
 package com.example.myapplication00
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
@@ -51,8 +52,7 @@ class FirstScreenFragment : Fragment() {
         }
 
         addNewWord.setOnClickListener {
-            var word: String = newWord.toString()
-            file.appendText(word)
+            file.appendText("${binding.newWord.text.toString()}\t${binding.newWordCategory.text.toString()} \n")
         }
     }
 
