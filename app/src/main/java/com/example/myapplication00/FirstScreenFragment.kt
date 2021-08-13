@@ -35,19 +35,6 @@ class FirstScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //check permissions
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            val permissions = arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-            // if is denied, ask for it
-            ActivityCompat.requestPermissions(this, permissions, 0)
-        }
-
         val button = binding.button
         val addNewWord = binding.addNewWord
         val newWord = binding.newWord
