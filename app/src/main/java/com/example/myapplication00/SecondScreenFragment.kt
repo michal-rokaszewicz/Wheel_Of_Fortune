@@ -1,19 +1,23 @@
 package com.example.myapplication00
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Environment
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import androidx.annotation.MainThread
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
 
-class SecondScreenFragment : Fragment() {
+class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
-
+    var animationFlag: Boolean = false
+    var degrees: Long = 0
     //file
     lateinit var path: File
     lateinit var folder: File
@@ -43,15 +47,24 @@ class SecondScreenFragment : Fragment() {
         val category = binding.category
         val word = binding.word
 
-        readWord()
-        category.text = wCat
-        word.text = wWord
+        //readWord()
+        //category.text = wCat
+        //word.text = wWord
 
         button.setOnClickListener {
             Navigation.findNavController(view).popBackStack()
         }
-    }
 
+        binding.startWheelButton.setOnClickListener{
+            if(!animationFlag)
+            {
+                val rotate = AnimationUtils.loadAnimation(this.context, R.anim.rotate)
+                binding.fortuneWheel.startAnimation(rotate)
+                animationFlag = false
+            }
+        }
+    }
+/*
     fun readWord(){
         var number: Int = (0..9).random()
 
@@ -80,5 +93,5 @@ class SecondScreenFragment : Fragment() {
         }
         wCat = tmp
     }
-
+*/
 }
