@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.RotateAnimation
 import androidx.annotation.MainThread
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
+import kotlin.random.Random
 
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
@@ -58,8 +61,15 @@ class SecondScreenFragment : Fragment(){
         binding.startWheelButton.setOnClickListener{
             if(!animationFlag)
             {
-                val rotate = AnimationUtils.loadAnimation(this.context, R.anim.rotate)
-                binding.fortuneWheel.startAnimation(rotate)
+                animationFlag = true
+                var rotationValue = Random.nextInt(1200, 1800)
+                val rotation = RotateAnimation(degrees.toFloat(),
+                    (degrees + rotationValue).toFloat(), 385.toFloat(), 385.toFloat())
+                rotation.duration = 4000
+                rotation.fillAfter = true
+                rotation.interpolator = DecelerateInterpolator(0.8f)
+
+                binding.fortuneWheel.startAnimation(rotation)
                 animationFlag = false
             }
         }
