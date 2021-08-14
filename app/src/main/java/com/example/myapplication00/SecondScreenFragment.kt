@@ -12,7 +12,6 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
 import androidx.annotation.MainThread
 import androidx.navigation.Navigation
-import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
 import kotlin.random.Random

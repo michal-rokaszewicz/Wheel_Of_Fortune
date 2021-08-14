@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
-import com.example.myapplication00.databinding.ActivityMainBinding
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import java.io.File
 
