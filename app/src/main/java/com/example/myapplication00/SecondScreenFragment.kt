@@ -1,8 +1,11 @@
 package com.example.myapplication00
 
 import android.content.Context
+import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.util.DisplayMetrics
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +13,20 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
+import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
     var animationFlag: Boolean = false
     var degrees: Long = 0
+    var width: Int = 0
+    var pivot: Int = 0
     //file
     lateinit var path: File
     lateinit var folder: File
@@ -48,6 +55,7 @@ class SecondScreenFragment : Fragment(){
         val button = binding.goBackButton
         val category = binding.category
         val word = binding.word
+        width = Resources.getSystem().displayMetrics.widthPixels
 
         //readWord()
         //category.text = wCat
@@ -58,12 +66,17 @@ class SecondScreenFragment : Fragment(){
         }
 
         binding.startWheelButton.setOnClickListener{
+            if(width == 1080)
+                pivot = 385
+            else if(width == 1440)
+                pivot = 490
             if(!animationFlag)
             {
                 animationFlag = true
                 var rotationValue = Random.nextInt(1200, 1800)
                 val rotation = RotateAnimation(degrees.toFloat(),
-                    (degrees + rotationValue).toFloat(), 385.toFloat(), 385.toFloat())
+                    (degrees + rotationValue).toFloat(), pivot.toFloat(), pivot.toFloat()
+                )
                 rotation.duration = 4000
                 rotation.fillAfter = true
                 rotation.interpolator = DecelerateInterpolator(0.8f)
