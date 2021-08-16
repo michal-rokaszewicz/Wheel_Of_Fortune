@@ -297,4 +297,13 @@
         app:layout_constraintEnd_toEndOf="@+id/guessWord"
         app:layout_constraintStart_toStartOf="@+id/guessWord" />
 
+    <TextView
+        android:id="@+id/moneyAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stan_konta_0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/category"
+        app:layout_constraintTop_toTopOf="@+id/category" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

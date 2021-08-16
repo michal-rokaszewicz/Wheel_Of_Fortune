@@ -52,7 +52,7 @@ class FirstScreenFragment : Fragment() {
         }
 
         addNewWord.setOnClickListener {
-            file.appendText("${binding.newWord.text.toString()}\t${binding.newWordCategory.text.toString()} \n")
+            file.appendText("${binding.newWord.text.toString()}\n${binding.newWordCategory.text.toString()} \n")
             val toast = Toast.makeText(this.context, "Dodano hasło ${binding.newWord.text.toString()} w kategorii ${binding.newWordCategory.text.toString()}", Toast.LENGTH_SHORT)
             toast.show()
         }
@@ -69,7 +69,7 @@ class FirstScreenFragment : Fragment() {
             var i: Int = 0
 
             while ( i < 10 ) {
-                file.appendText("${basicWords[i].first}\t${basicWords[i].second} \n")
+                file.appendText("${basicWords[i].first}\n${basicWords[i].second} \n")
                 i++
             }
         }

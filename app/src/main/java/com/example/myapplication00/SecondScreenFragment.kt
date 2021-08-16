@@ -3,6 +3,7 @@ package com.example.myapplication00
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
+import java.io.InputStream
 import kotlin.random.Random
 
 class SecondScreenFragment : Fragment(){
@@ -23,14 +25,12 @@ class SecondScreenFragment : Fragment(){
     var pivot: Int = 0
     val wheelValues: Array<Int> = arrayOf(1, 300, 400, 600, 0, 900, 3, 500, 900, 300, 400, 550, 800, 500, 300, 500, 600, 2500, 600, 300, 700, 450, 350, 800)
     var wheelValue: Int = 1000
+    var money: Int = 0
+    var word: String = ""
     //file
     lateinit var path: File
     lateinit var folder: File
     lateinit var file: File
-
-    //word
-    var wWord: String = ""
-    var wCat: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,18 +44,15 @@ class SecondScreenFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         folder = File(path,"/KoloFortuny")
         file = File(folder, "/words.txt")
 
         val button = binding.goBackButton
-        val category = binding.category
-        val word = binding.word
+
         width = Resources.getSystem().displayMetrics.widthPixels
 
-        //readWord()
-        //category.text = wCat
-        //word.text = wWord
+        readWord()
 
         button.setOnClickListener {
             Navigation.findNavController(view).popBackStack()
@@ -83,40 +80,38 @@ class SecondScreenFragment : Fragment(){
             while(degrees > 360){
                 degrees -= 360
             }
-            val toast = Toast.makeText(this.context, "${wheelValues[rounding((degrees.toDouble()/15))]}", Toast.LENGTH_LONG)
-            toast.show()
+
+            wheelValue = wheelValues[rounding((degrees.toDouble()/15))]
+
+            Handler().postDelayed({if(wheelValue != 0 && wheelValue != 1 && wheelValue != 3){
+                money += wheelValue
+                binding.moneyAccount.text = "Stan konta: ${money}$"
+            }}, 4000)
         }
     }
-/*
+
     fun readWord(){
-        var number: Int = (0..9).random()
+        val bufferedReader = file.bufferedReader()
+        val text: List<String> = bufferedReader.readLines()
 
-        var text: List<String> = file.readLines()
-        var line: String
-        var n: Int = 0
-        var w: String = ""
-        var ww: String
+        var number: Int = Random.nextInt(0, text.size - 1)
 
-        for( line in text){
-            if(n == number){
-                w = line
-            }
+        if(number != 0 ) {
+            if(number % 2 != 0)
+                number -= 1
         }
 
-        var i: Int = 0
-        var tmp: String = "w"
+        var underlines: String = ""
 
-        while(i < w.length){
-            if(w[i].toInt() != 9)
-                tmp += w[i]
-            else {
-                wWord = tmp
-                tmp = "s"
-            }
+        for(i in 0..text[number].length - 1) {
+            underlines += " _ "
         }
-        wCat = tmp
+
+        word = text[number]
+        binding.category.text = text[number + 1]
+        binding.word.text = underlines
     }
-*/
+
 
     fun rounding(number: Double): Int {
         var temp = number

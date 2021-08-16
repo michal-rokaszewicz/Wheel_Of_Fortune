@@ -33,4 +33,5 @@
     <string name="dodaj">podaj nowe słowo</string>
     <string name="podaj_kategori">podaj kategorię</string>
     <string name="podaj_nowe_s_owo">podaj nowe słowo</string>
+    <string name="stan_konta_0">Stan konta: 0$</string>
 </resources>
