@@ -52,7 +52,7 @@ class FirstScreenFragment : Fragment() {
         }
 
         addNewWord.setOnClickListener {
-            file.appendText("${binding.newWord.text.toString()}\n${binding.newWordCategory.text.toString()} \n")
+            file.appendText("${binding.newWord.text.toString().uppercase()}\n${binding.newWordCategory.text.toString().uppercase()} \n")
             val toast = Toast.makeText(this.context, "Dodano hasło ${binding.newWord.text.toString()} w kategorii ${binding.newWordCategory.text.toString()}", Toast.LENGTH_SHORT)
             toast.show()
         }
@@ -62,9 +62,9 @@ class FirstScreenFragment : Fragment() {
         if(!folder.exists()) {
             folder.mkdir()
 
-            val basicWords: Array<Pair<String, String>> = arrayOf(Pair("Mieszko I", "historia polski"), Pair("Husaria", "historia polski"),
-                Pair("Robert Lewandowski", "piłka nożna"), Pair("Spalony", "piłka nożna"), Pair("Karta graficzna", "komputer"), Pair("Procesor", "komputer"),
-                Pair("Minecraft", "gry komputerowe"), Pair("Sonic", "gry komputerowe"), Pair( "Monsun", "pogoda"), Pair( "Cyklon", "pogoda"))
+            val basicWords: Array<Pair<String, String>> = arrayOf(Pair("MIESZKO I", "HISTORIA POLSKI"), Pair("HUSARIA", "HISTORIA POLSKI"),
+                Pair("ROBERT LEWANDOWSKI", "PIŁKA NOŻNA"), Pair("SPALONY", "PIŁKA NOŻNA"), Pair("KARTA GRAFICZNA", "KOMPUTER"), Pair("PROCESOR", "KOMPUTER"),
+                Pair("MINECRAFT", "GRY KOMPUTEROWE"), Pair("SONIC", "GRY KOMPUTEROWE"), Pair( "MONSUN", "POGODA"), Pair( "CYKLON", "POGODA"))
 
             var i: Int = 0
 
