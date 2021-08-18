@@ -2,9 +2,11 @@ package com.example.myapplication00
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,8 +49,18 @@ class FirstScreenFragment : Fragment() {
         createFile()
 
         button.setOnClickListener{
+            val intent = Intent(this.context, PopUpWindow::class.java)
+            intent.putExtra("popuptext", "Runda 1")
+            intent.putExtra("darkstatusbar", false)
+            startActivity(intent)
+
+            Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
+                intent.putExtra("darkstatusbar", false)
+                startActivity(intent)}, 2500)
+
             val action = R.id.action_firstScreenFragment_to_secondScreenFragment
-            Navigation.findNavController(binding.root).navigate(action)
+
+            Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5075)
         }
 
         addNewWord.setOnClickListener {

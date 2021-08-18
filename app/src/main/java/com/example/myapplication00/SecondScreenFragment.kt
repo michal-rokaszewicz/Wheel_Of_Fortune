@@ -31,6 +31,8 @@ class SecondScreenFragment : Fragment(){
     var moneyCache: Int = 0
     var phaseNumber = 1
     var word: String = ""
+    var missedLetters = ""
+    var round = 1
     //file
     lateinit var path: File
     lateinit var folder: File
@@ -48,8 +50,6 @@ class SecondScreenFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val intent = Intent(this.context, PopUpWindow::class.java)
-
         binding.goBackButton.setOnClickListener {
             Navigation.findNavController(view).popBackStack()
         }
@@ -61,13 +61,11 @@ class SecondScreenFragment : Fragment(){
         width = Resources.getSystem().displayMetrics.widthPixels
 
         readWord()
-
-        intent.putExtra("popuptext", "Zakręć kołem fortuny!")
-        intent.putExtra("darkstatusbar", false)
-        startActivity(intent)
-
+        if(round != 1) {
+            popUp("Zakręć kołem fortuny!")
+        }
         binding.startWheelButton.setOnClickListener {
-            if(phaseNumber == 1) {
+            if(phaseNumber == 1 || phaseNumber == 3) {
                 if (width == 1080)
                     pivot = 385
                 else if (width == 1440)
@@ -94,18 +92,23 @@ class SecondScreenFragment : Fragment(){
 
                 Handler().postDelayed({
                     if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3) {
+                        phaseNumber = 2
                         moneyCache += wheelValue
                     } else if (wheelValue == 0) {
                         money = 0
                         moneyCache = 0
                         binding.moneyAccount.text = "Stan konta: ${money}$"
+                        popUp("Niestety zbankrutowałeś! Tracisz wszystkie środki")
                     } else if (wheelValue == 1) {
-
+                        popUp("Tracisz turę!")
                     }else if(wheelValue == 3){
                         moneyCache += 300
+                        popUp("Wylosowałeś możliwość dodatkowego zakręcenia kołem!")
                     }
                 }, 4000)
-                phaseNumber = 2
+                if(wheelValue != 0 && wheelValue != 1 && wheelValue != 3)
+                Handler().postDelayed({popUp("Zgadnij spółgłoskę!")}, 4000)
+
             }else if(phaseNumber == 2){
                 val toast = Toast.makeText(
                     this.context,
@@ -117,20 +120,33 @@ class SecondScreenFragment : Fragment(){
         }
 
         binding.wordPushButton.setOnClickListener {
-            if(phaseNumber == 2 || phaseNumber == 1) {
+            if(phaseNumber == 3) {
                 if (binding.guessWord.text.toString().uppercase() == word) {
-                    val toast =
-                        Toast.makeText(this.context, "Brawo zgadłeś hasło!", Toast.LENGTH_SHORT)
-                    toast.show()
+                    if(round != 5) {
+                        popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
+                    }else if(round == 5){
+                        popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
+                        Navigation.findNavController(view).popBackStack()
+                    }else{
+                        round++
+                        phaseNumber = 1
+                        readWord()
+                        moneyCache = 0
+                        popUp("RUNDA ${round}")
+                        binding.roundNumberText.text = "Runda ${round}"
+                    }
                 } else {
-                    val toast = Toast.makeText(
-                        this.context,
-                        "Niestety nie zgadłeś hasła :(",
-                        Toast.LENGTH_SHORT
-                    )
-                    toast.show()
+                    popUp("Niestety nie udało ci się zgadnąć hasła!")
                 }
+                binding.guessWord.text.clear()
                 phaseNumber = 1
+            }else{
+                val toast = Toast.makeText(
+                    this.context,
+                    "Nie możesz teraz zgadywać hasłą!",
+                    Toast.LENGTH_SHORT
+                )
+                toast.show()
             }
         }
 
@@ -175,26 +191,50 @@ class SecondScreenFragment : Fragment(){
     }
 
     fun checkLetter(letter: Char): Boolean{
+        var letterFlag = 0
+        var totalText = binding.word.text
+        for(i in 0..missedLetters.length - 1){
+            if(letter == missedLetters[i]){
+                popUp("Już próbowałeś zgadnąć tą literę! spróbuj inną!")
+                return false
+            }
+        }
+
+        for(i in 0..binding.word.text.length - 1){
+            if(letter == binding.word.text[i]){
+                popUp("Już zgadłeś tą literę! Spróbuj innej!")
+                return false
+            }
+        }
+
         var temp = 1
         var j = 0
         for(i in 0..word.length - 1) {
             if(letter == word[i]){
+                letterFlag = 1
                 while(j < i){
                     temp += 3
                     j++
                 }
-                val text = StringBuilder(binding.word.text).also { it.setCharAt(temp,letter)}
-                binding.word.text = text.toString()
-
-                money += moneyCache
-                binding.moneyAccount.text = "Stan konta: ${money}$"
-                moneyCache = 0
-                phaseNumber = 1
-                return true
+                val text = StringBuilder(totalText).also { it.setCharAt(temp,letter)}
+                totalText = text.toString()
             }
         }
+        if(letterFlag == 1){
+            binding.word.text = totalText.toString()
+            popUp("Brawo! Zgadłeś spółgłoskę, kwota: ${moneyCache}$ ląduje na twoim koncie!")
+            money += moneyCache
+            binding.moneyAccount.text = "Stan konta: ${money}$"
+            moneyCache = 0
+            phaseNumber = 3
+            Handler().postDelayed({popUp("Zakręć kołem ponownie lub spróbuj zgadnąć hasło!")}, 2500)
+            return true
+        }
+        missedLetters += letter
+        popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
         moneyCache = 0
-        phaseNumber = 1
+        phaseNumber = 3
+        Handler().postDelayed({popUp("Zakręć kołem ponownie lub spróbuj zgadnąć hasło!")}, 2500)
         return false
     }
 
@@ -335,4 +375,10 @@ class SecondScreenFragment : Fragment(){
         }
     }
 
+    fun popUp(text: String){
+        val intent = Intent(this.context, PopUpWindow::class.java)
+        intent.putExtra("popuptext", text)
+        intent.putExtra("darkstatusbar", false)
+        startActivity(intent)
+    }
 }

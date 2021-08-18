@@ -4,9 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_main.xml" value="0.2957427536231884" />
+        <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_main2.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_pop_up_window.xml" value="0.33" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/first_activity.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_first_screen.xml" value="0.3484375" />
+        <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_round.xml" value="0.33" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_second_screen.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/second_activity.xml" value="0.1" />
       </map>
