@@ -1,6 +1,7 @@
 package com.example.myapplication00
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +22,8 @@ import java.io.File
 class FirstScreenFragment : Fragment() {
     lateinit var binding: FragmentFirstScreenBinding
 
+    lateinit var bluetoothAdapter: BluetoothAdapter
+
     //file
     lateinit var path: File
     lateinit var folder: File
@@ -30,6 +33,11 @@ class FirstScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        if(bluetoothAdapter == null) {
+            var toast = Toast.makeText(this.context, "Twoje urządzenie nie wspiera bluetooth!", Toast.LENGTH_LONG)
+            Handler().postDelayed({System.exit(-1)}, 2500)
+        }
         binding = FragmentFirstScreenBinding.inflate(layoutInflater)
         val view = binding.root
         return view
@@ -60,7 +68,7 @@ class FirstScreenFragment : Fragment() {
 
             val action = R.id.action_firstScreenFragment_to_secondScreenFragment
 
-            Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5075)
+            Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5100)
         }
 
         addNewWord.setOnClickListener {

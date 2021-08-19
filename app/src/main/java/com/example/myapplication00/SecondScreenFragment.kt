@@ -100,6 +100,7 @@ class SecondScreenFragment : Fragment(){
                         binding.moneyAccount.text = "Stan konta: ${money}$"
                         popUp("Niestety zbankrutowałeś! Tracisz wszystkie środki")
                     } else if (wheelValue == 1) {
+                        moneyCache = 0
                         popUp("Tracisz turę!")
                     }else if(wheelValue == 3){
                         moneyCache += 300
@@ -124,16 +125,16 @@ class SecondScreenFragment : Fragment(){
                 if (binding.guessWord.text.toString().uppercase() == word) {
                     if(round != 5) {
                         popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
-                    }else if(round == 5){
-                        popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
-                        Navigation.findNavController(view).popBackStack()
-                    }else{
                         round++
+                        missedLetters = ""
                         phaseNumber = 1
                         readWord()
                         moneyCache = 0
-                        popUp("RUNDA ${round}")
+                        Handler().postDelayed({popUp("RUNDA ${round}")}, 2500)
                         binding.roundNumberText.text = "Runda ${round}"
+                    }else if(round == 5){
+                        popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
+                        Navigation.findNavController(view).popBackStack()
                     }
                 } else {
                     popUp("Niestety nie udało ci się zgadnąć hasła!")
