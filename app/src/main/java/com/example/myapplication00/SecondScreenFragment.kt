@@ -21,18 +21,31 @@ import kotlin.random.Random
 
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
+
+    //flag that indicates that animation is going
     var animationFlag: Boolean = false
+
+    //variables for wheel animation
     var degrees: Int = 0
     var width: Int = 0
     var pivot: Int = 0
+
+    //variables for wheel functionality
     val wheelValues: Array<Int> = arrayOf(1, 300, 400, 600, 0, 900, 3, 500, 900, 300, 400, 550, 800, 500, 300, 500, 600, 2500, 600, 300, 700, 450, 350, 800)
     var wheelValue: Int = 1000
     var money: Int = 0
     var moneyCache: Int = 0
+
+    //variable which indicates game phases like spinning wheel or guessing letters ect.
     var phaseNumber = 1
+
+    //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
     var word: String = ""
     var missedLetters = ""
+
+    //variable which indicates rounds of game (there are 5 rounds total)
     var round = 1
+
     //file
     lateinit var path: File
     lateinit var folder: File
@@ -50,20 +63,27 @@ class SecondScreenFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //go back action while clicking button
         binding.goBackButton.setOnClickListener {
             Navigation.findNavController(view).popBackStack()
         }
 
+        //assigning file paths
         path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         folder = File(path,"/KoloFortuny")
         file = File(folder, "/words.txt")
 
+        //getting screen resolution
         width = Resources.getSystem().displayMetrics.widthPixels
 
+        //drawing word from file
         readWord()
+
         if(round != 1) {
             popUp("Zakręć kołem fortuny!")
         }
+
+        //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
             if(phaseNumber == 1 || phaseNumber == 3) {
                 if (width == 1080)
@@ -120,6 +140,7 @@ class SecondScreenFragment : Fragment(){
             }
         }
 
+        //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
             if(phaseNumber == 3) {
                 if (binding.guessWord.text.toString().uppercase() == word) {
@@ -154,6 +175,7 @@ class SecondScreenFragment : Fragment(){
         letterButtons()
     }
 
+    //function that draws word from file
     fun readWord(){
         val bufferedReader = file.bufferedReader()
         val text: List<String> = bufferedReader.readLines()
@@ -176,6 +198,7 @@ class SecondScreenFragment : Fragment(){
         binding.word.text = underlines
     }
 
+    //function that changes wheel degree divided by 15 to table index
     fun rounding(number: Double): Int {
         var temp = number
         temp -= temp.toInt()
@@ -191,6 +214,7 @@ class SecondScreenFragment : Fragment(){
                 return number.toInt()
     }
 
+    //function which checks guessing letters
     fun checkLetter(letter: Char): Boolean{
         var letterFlag = 0
         var totalText = binding.word.text
@@ -239,6 +263,7 @@ class SecondScreenFragment : Fragment(){
         return false
     }
 
+    //function which implements letter buttons actions
     fun letterButtons() {
         val toast = Toast.makeText(this.context, "Zakręć kołem!", Toast.LENGTH_SHORT)
         binding.LetterB.setOnClickListener {
@@ -376,6 +401,7 @@ class SecondScreenFragment : Fragment(){
         }
     }
 
+    //function that makes popup screens
     fun popUp(text: String){
         val intent = Intent(this.context, PopUpWindow::class.java)
         intent.putExtra("popuptext", text)

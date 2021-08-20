@@ -21,7 +21,6 @@ import java.io.File
 
 class FirstScreenFragment : Fragment() {
     lateinit var binding: FragmentFirstScreenBinding
-
     lateinit var bluetoothAdapter: BluetoothAdapter
 
     //file
@@ -33,9 +32,12 @@ class FirstScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //checking for bluetooth compatibility
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if(bluetoothAdapter == null) {
             var toast = Toast.makeText(this.context, "Twoje urządzenie nie wspiera bluetooth!", Toast.LENGTH_LONG)
+            toast.show()
             Handler().postDelayed({System.exit(-1)}, 2500)
         }
         binding = FragmentFirstScreenBinding.inflate(layoutInflater)
@@ -46,31 +48,48 @@ class FirstScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //assigning some buttons
         val button = binding.button
         val addNewWord = binding.addNewWord
         val newWord = binding.newWord
 
+        //assigning file paths
         path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         folder = File(path,"/KoloFortuny")
         file = File(folder, "/words.txt")
 
         createFile()
 
+        //action when clicking main button on first screen
         button.setOnClickListener{
-            val intent = Intent(this.context, PopUpWindow::class.java)
-            intent.putExtra("popuptext", "Runda 1")
-            intent.putExtra("darkstatusbar", false)
-            startActivity(intent)
 
-            Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
-                intent.putExtra("darkstatusbar", false)
-                startActivity(intent)}, 2500)
+            //checking for bluetooth connection
+            if(bluetoothAdapter.isEnabled){
+                val devices = bluetoothAdapter.bondedDevices
+                if(devices.isEmpty() ){
+                    var toast = Toast.makeText(this.context, "Nie jesteś połączony z przeciwnikiem! Połącz się z przeciwnikiem po bluetooth!", Toast.LENGTH_LONG)
+                    toast.show()
+                }else{
 
-            val action = R.id.action_firstScreenFragment_to_secondScreenFragment
+                    //giving popup screens for user
+                    val intent = Intent(this.context, PopUpWindow::class.java)
+                    intent.putExtra("popuptext", "Runda 1")
+                    intent.putExtra("darkstatusbar", false)
+                    startActivity(intent)
 
-            Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5100)
+                    Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
+                        intent.putExtra("darkstatusbar", false)
+                        startActivity(intent)}, 2500)
+
+                    //going to second screen and starting the game
+                    val action = R.id.action_firstScreenFragment_to_secondScreenFragment
+
+                    Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5100)
+                }
+            }
         }
 
+        //action on clicking button which adds new word and category
         addNewWord.setOnClickListener {
             file.appendText("${binding.newWord.text.toString().uppercase()}\n${binding.newWordCategory.text.toString().uppercase()} \n")
             val toast = Toast.makeText(this.context, "Dodano hasło ${binding.newWord.text.toString()} w kategorii ${binding.newWordCategory.text.toString()}", Toast.LENGTH_SHORT)
@@ -78,6 +97,7 @@ class FirstScreenFragment : Fragment() {
         }
     }
 
+    //function which creates file with basic words
     private fun createFile(){
         if(!folder.exists()) {
             folder.mkdir()

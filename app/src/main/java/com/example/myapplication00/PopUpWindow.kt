@@ -17,6 +17,7 @@ import androidx.core.graphics.ColorUtils
 import com.example.myapplication00.databinding.ActivityPopUpWindowBinding
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 
+//class which defines popup screen
 class PopUpWindow : AppCompatActivity() {
     lateinit var binding: ActivityPopUpWindowBinding
     private var popupText = ""
