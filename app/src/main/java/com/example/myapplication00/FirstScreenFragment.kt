@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
@@ -32,7 +34,7 @@ class FirstScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+/*
         //checking for bluetooth compatibility
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if(bluetoothAdapter == null) {
@@ -40,6 +42,7 @@ class FirstScreenFragment : Fragment() {
             toast.show()
             Handler().postDelayed({System.exit(-1)}, 2500)
         }
+        */
         binding = FragmentFirstScreenBinding.inflate(layoutInflater)
         val view = binding.root
         return view
@@ -62,7 +65,7 @@ class FirstScreenFragment : Fragment() {
 
         //action when clicking main button on first screen
         button.setOnClickListener{
-
+/*
             //checking for bluetooth connection
             if(bluetoothAdapter.isEnabled){
                 val devices = bluetoothAdapter.bondedDevices
@@ -71,6 +74,8 @@ class FirstScreenFragment : Fragment() {
                     toast.show()
                 }else{
 
+
+ */
                     //giving popup screens for user
                     val intent = Intent(this.context, PopUpWindow::class.java)
                     intent.putExtra("popuptext", "Runda 1")
@@ -83,10 +88,14 @@ class FirstScreenFragment : Fragment() {
 
                     //going to second screen and starting the game
                     val action = R.id.action_firstScreenFragment_to_secondScreenFragment
+            Navigation.findNavController(binding.root).navigate(action)
 
-                    Handler().postDelayed({Navigation.findNavController(binding.root).navigate(action)}, 5100)
+            /*
                 }
+
             }
+
+         */
         }
 
         //action on clicking button which adds new word and category

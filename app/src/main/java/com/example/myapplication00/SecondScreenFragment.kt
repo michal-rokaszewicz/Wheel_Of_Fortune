@@ -1,10 +1,18 @@
 package com.example.myapplication00
 
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothAdapter.STATE_CONNECTED
+import android.bluetooth.BluetoothProfile.STATE_CONNECTED
+import android.bluetooth.BluetoothSocket
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.os.Message
+import android.provider.SyncStateContract
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +23,22 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
+import java.io.OutputStream
 import java.lang.StringBuilder
+import java.util.*
 import kotlin.random.Random
+/*
+val STATE_LISTENING: Int = 1
+val STATE_MESSAGE_RECEIVED: Int = 5
+const val MESSAGE_READ: Int = 0
+const val MESSAGE_WRITE: Int = 2
+const val MESSAGE_TOAST: Int = 3
+val MY_UUID = UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66")
 
+
+ */
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
 
@@ -28,7 +48,6 @@ class SecondScreenFragment : Fragment(){
     //variables for wheel animation
     var degrees: Int = 0
     var width: Int = 0
-    var pivot: Int = 0
 
     //variables for wheel functionality
     val wheelValues: Array<Int> = arrayOf(1, 300, 400, 600, 0, 900, 3, 500, 900, 300, 400, 550, 800, 500, 300, 500, 600, 2500, 600, 300, 700, 450, 350, 800)
@@ -45,6 +64,8 @@ class SecondScreenFragment : Fragment(){
 
     //variable which indicates rounds of game (there are 5 rounds total)
     var round = 1
+
+    var btMessage: String = ""
 
     //file
     lateinit var path: File
@@ -86,16 +107,12 @@ class SecondScreenFragment : Fragment(){
         //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
             if(phaseNumber == 1 || phaseNumber == 3) {
-                if (width == 1080)
-                    pivot = 385
-                else if (width == 1440)
-                    pivot = 490
                 if (!animationFlag) {
                     animationFlag = true
                     var rotationValue = Random.nextInt(1080, 1440)
                     val rotation = RotateAnimation(
                         degrees.toFloat(),
-                        (degrees + rotationValue).toFloat(), pivot.toFloat(), pivot.toFloat()
+                        (degrees + rotationValue).toFloat(), binding.fortuneWheel.pivotX, binding.fortuneWheel.pivotY
                     )
                     rotation.duration = 4000
                     rotation.fillAfter = true
@@ -408,4 +425,81 @@ class SecondScreenFragment : Fragment(){
         intent.putExtra("darkstatusbar", false)
         startActivity(intent)
     }
+/*
+    val handler: Handler = object : Handler() {
+        public override fun handleMessage(msg: Message){
+            when(msg.what){
+                STATE_LISTENING -> {
+
+                }
+                STATE_MESSAGE_RECEIVED -> {
+                    var readBuff: Byte = msg.obj as Byte
+                    var tempMsg: String = readBuff.toString() + '0'+ msg.arg1.toString()
+                    btMessage = tempMsg
+                }
+            }
+        }
+    }
+
+    private inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+
+        private val mmInStream: InputStream = mmSocket.inputStream
+        private val mmOutStream: OutputStream = mmSocket.outputStream
+        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+
+        override fun run() {
+            var numBytes: Int // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs.
+            while (true) {
+                // Read from the InputStream.
+                numBytes = try {
+                    mmInStream.read(mmBuffer)
+                } catch (e: IOException) {
+                    Log.d(TAG, "Input stream was disconnected", e)
+                    break
+                }
+
+                // Send the obtained bytes to the UI activity.
+                val readMsg = handler.obtainMessage(
+                    MESSAGE_READ, numBytes, -1,
+                    mmBuffer)
+                readMsg.sendToTarget()
+            }
+        }
+
+        // Call this from the main activity to send data to the remote device.
+        fun write(bytes: ByteArray) {
+            try {
+                mmOutStream.write(bytes)
+            } catch (e: IOException) {
+                Log.e(TAG, "Error occurred when sending data", e)
+
+                // Send a failure message back to the activity.
+                val writeErrorMsg = handler.obtainMessage(MESSAGE_TOAST)
+                val bundle = Bundle().apply {
+                    putString("toast", "Couldn't send data to the other device")
+                }
+                writeErrorMsg.data = bundle
+                handler.sendMessage(writeErrorMsg)
+                return
+            }
+
+            // Share the sent message with the UI activity.
+            val writtenMsg = handler.obtainMessage(
+                MESSAGE_WRITE, -1, -1, mmBuffer)
+            writtenMsg.sendToTarget()
+        }
+
+        // Call this method from the main activity to shut down the connection.
+        fun cancel() {
+            try {
+                mmSocket.close()
+            } catch (e: IOException) {
+                Log.e(TAG, "Could not close the connect socket", e)
+            }
+        }
+    }
+
+ */
 }
