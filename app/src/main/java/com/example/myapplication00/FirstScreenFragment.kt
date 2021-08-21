@@ -1,6 +1,7 @@
 package com.example.myapplication00
 
 import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
@@ -107,20 +108,29 @@ class FirstScreenFragment : Fragment() {
     }
 
     //function which creates file with basic words
-    private fun createFile(){
-        if(!folder.exists()) {
-            folder.mkdir()
+    private fun createFile() {
+            if (!folder.exists()) {
+                folder.mkdir()
 
-            val basicWords: Array<Pair<String, String>> = arrayOf(Pair("MIESZKO I", "HISTORIA POLSKI"), Pair("HUSARIA", "HISTORIA POLSKI"),
-                Pair("ROBERT LEWANDOWSKI", "PIŁKA NOŻNA"), Pair("SPALONY", "PIŁKA NOŻNA"), Pair("KARTA GRAFICZNA", "KOMPUTER"), Pair("PROCESOR", "KOMPUTER"),
-                Pair("MINECRAFT", "GRY KOMPUTEROWE"), Pair("SONIC", "GRY KOMPUTEROWE"), Pair( "MONSUN", "POGODA"), Pair( "CYKLON", "POGODA"))
+                val basicWords: Array<Pair<String, String>> = arrayOf(
+                    Pair("MIESZKO I", "HISTORIA POLSKI"),
+                    Pair("HUSARIA", "HISTORIA POLSKI"),
+                    Pair("ROBERT LEWANDOWSKI", "PIŁKA NOŻNA"),
+                    Pair("SPALONY", "PIŁKA NOŻNA"),
+                    Pair("KARTA GRAFICZNA", "KOMPUTER"),
+                    Pair("PROCESOR", "KOMPUTER"),
+                    Pair("MINECRAFT", "GRY KOMPUTEROWE"),
+                    Pair("SONIC", "GRY KOMPUTEROWE"),
+                    Pair("MONSUN", "POGODA"),
+                    Pair("CYKLON", "POGODA")
+                )
 
-            var i: Int = 0
+                var i: Int = 0
 
-            while ( i < 10 ) {
-                file.appendText("${basicWords[i].first}\n${basicWords[i].second} \n")
-                i++
+                while (i < 10) {
+                    file.appendText("${basicWords[i].first}\n${basicWords[i].second} \n")
+                    i++
+                }
             }
-        }
     }
 }

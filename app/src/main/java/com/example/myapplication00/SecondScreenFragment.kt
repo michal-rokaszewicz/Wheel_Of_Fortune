@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -64,6 +65,8 @@ class SecondScreenFragment : Fragment(){
 
     //variable which indicates rounds of game (there are 5 rounds total)
     var round = 1
+
+    var chosenWords: List<String> = emptyList()
 
     var btMessage: String = ""
 
@@ -168,6 +171,7 @@ class SecondScreenFragment : Fragment(){
                         phaseNumber = 1
                         readWord()
                         moneyCache = 0
+                        resetLetterButtonsColor()
                         Handler().postDelayed({popUp("RUNDA ${round}")}, 2500)
                         binding.roundNumberText.text = "Runda ${round}"
                     }else if(round == 5){
@@ -182,7 +186,7 @@ class SecondScreenFragment : Fragment(){
             }else{
                 val toast = Toast.makeText(
                     this.context,
-                    "Nie możesz teraz zgadywać hasłą!",
+                    "Nie możesz teraz zgadywać hasła!",
                     Toast.LENGTH_SHORT
                 )
                 toast.show()
@@ -199,6 +203,11 @@ class SecondScreenFragment : Fragment(){
 
         var number: Int = Random.nextInt(0, text.size - 1)
 
+        while(chosenWords.contains(text[number])){
+            number = Random.nextInt(0, text.size - 1)
+        }
+
+
         if(number != 0 ) {
             if(number % 2 != 0)
                 number -= 1
@@ -207,10 +216,14 @@ class SecondScreenFragment : Fragment(){
         var underlines: String = ""
 
         for(i in 0..text[number].length - 1) {
-            underlines += " _ "
+            if(text[number][i] == ' ')
+                underlines += "   "
+            else
+                underlines += " _ "
         }
 
         word = text[number]
+        chosenWords.plus(word)
         binding.category.text = text[number + 1]
         binding.word.text = underlines
     }
@@ -286,6 +299,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterB.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('B')
+                binding.LetterB.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -293,6 +307,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterC.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('C')
+                binding.LetterC.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -300,6 +315,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterD.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('D')
+                binding.LetterD.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -307,6 +323,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterF.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('F')
+                binding.LetterF.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -314,6 +331,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterH.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('H')
+                binding.LetterH.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -321,6 +339,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterG.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('G')
+                binding.LetterG.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -328,6 +347,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterJ.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('J')
+                binding.LetterJ.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -335,6 +355,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterK.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('K')
+                binding.LetterK.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -342,6 +363,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterL.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('L')
+                binding.LetterL.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -349,6 +371,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterM.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('M')
+                binding.LetterM.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -356,6 +379,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterN.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('N')
+                binding.LetterN.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -363,6 +387,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterP.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('P')
+                binding.LetterP.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -370,6 +395,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterR.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('R')
+                binding.LetterR.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -377,6 +403,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterS.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('S')
+                binding.LetterS.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -384,6 +411,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterT.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('T')
+                binding.LetterT.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -391,6 +419,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterV.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('V')
+                binding.LetterV.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -398,6 +427,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterW.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('W')
+                binding.LetterW.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -405,6 +435,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterX.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('X')
+                binding.LetterX.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -412,6 +443,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterZ.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('Z')
+                binding.LetterZ.setBackgroundColor(Color.rgb(70,70,70))
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -424,6 +456,28 @@ class SecondScreenFragment : Fragment(){
         intent.putExtra("popuptext", text)
         intent.putExtra("darkstatusbar", false)
         startActivity(intent)
+    }
+
+    fun resetLetterButtonsColor(){
+        binding.LetterB.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterC.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterD.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterF.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterG.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterH.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterJ.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterK.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterL.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterM.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterN.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterP.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterR.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterS.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterT.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterX.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterZ.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterW.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterV.setBackgroundColor(Color.rgb(12, 82, 168))
     }
 /*
     val handler: Handler = object : Handler() {
