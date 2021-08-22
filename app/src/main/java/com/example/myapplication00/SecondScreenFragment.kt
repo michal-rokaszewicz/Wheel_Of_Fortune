@@ -30,7 +30,8 @@ import java.io.OutputStream
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.random.Random
-/*
+
+//bluetooth
 val STATE_LISTENING: Int = 1
 val STATE_MESSAGE_RECEIVED: Int = 5
 const val MESSAGE_READ: Int = 0
@@ -39,7 +40,7 @@ const val MESSAGE_TOAST: Int = 3
 val MY_UUID = UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66")
 
 
- */
+
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
 
@@ -75,6 +76,10 @@ class SecondScreenFragment : Fragment(){
     lateinit var folder: File
     lateinit var file: File
 
+    //handler
+    private lateinit var mRunnable: Runnable
+    private lateinit var mHandler: Handler
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -86,6 +91,25 @@ class SecondScreenFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //
+        mHandler = Handler()
+
+        mRunnable = Runnable {
+
+            //TODO
+            Toast.makeText(this.context, "podobno działa", Toast.LENGTH_SHORT).show()
+
+            mHandler.postDelayed(
+                mRunnable,
+                100
+            )
+        }
+        mHandler.postDelayed(
+            mRunnable,
+            100
+        )
+        //
 
         //go back action while clicking button
         binding.goBackButton.setOnClickListener {
@@ -427,7 +451,8 @@ class SecondScreenFragment : Fragment(){
         binding.LetterW.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('W')
-                binding.LetterW.setBackgroundColor(Color.rgb(70,70,70))
+                //binding.LetterW.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterW.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -476,8 +501,9 @@ class SecondScreenFragment : Fragment(){
         binding.LetterT.setBackgroundColor(Color.rgb(12, 82, 168))
         binding.LetterX.setBackgroundColor(Color.rgb(12, 82, 168))
         binding.LetterZ.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterW.setBackgroundColor(Color.rgb(12, 82, 168))
+        //binding.LetterW.setBackgroundColor(Color.rgb(12, 82, 168))
         binding.LetterV.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterW.isEnabled = true
     }
 /*
     val handler: Handler = object : Handler() {
