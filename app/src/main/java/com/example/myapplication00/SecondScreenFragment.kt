@@ -1,6 +1,7 @@
 package com.example.myapplication00
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter.STATE_CONNECTED
 import android.bluetooth.BluetoothProfile.STATE_CONNECTED
 import android.bluetooth.BluetoothSocket
@@ -30,6 +31,7 @@ import java.io.OutputStream
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.random.Random
+import com.example.myapplication00.BluetoothActivity
 
 //bluetooth
 val STATE_LISTENING: Int = 1
@@ -69,7 +71,7 @@ class SecondScreenFragment : Fragment(){
 
     var chosenWords: List<String> = emptyList()
 
-    var btMessage: String = ""
+    public var btMessage: String = ""
 
     //file
     lateinit var path: File
@@ -97,8 +99,12 @@ class SecondScreenFragment : Fragment(){
 
         mRunnable = Runnable {
 
-            //TODO
-            Toast.makeText(this.context, "podobno działa", Toast.LENGTH_SHORT).show()
+            val bluetoothThing = BluetoothActivity()
+            bluetoothThing.receiveCommand()
+
+            if(bluetoothThing.output != null){
+                Toast.makeText(this.context, "${bluetoothThing.output}", Toast.LENGTH_SHORT).show()
+            }
 
             mHandler.postDelayed(
                 mRunnable,
