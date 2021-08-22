@@ -35,7 +35,7 @@ class FirstScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-/*
+
         //checking for bluetooth compatibility
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
         if(bluetoothAdapter == null) {
@@ -43,7 +43,7 @@ class FirstScreenFragment : Fragment() {
             toast.show()
             Handler().postDelayed({System.exit(-1)}, 2500)
         }
-        */
+
         binding = FragmentFirstScreenBinding.inflate(layoutInflater)
         val view = binding.root
         return view
@@ -66,7 +66,6 @@ class FirstScreenFragment : Fragment() {
 
         //action when clicking main button on first screen
         button.setOnClickListener{
-/*
             //checking for bluetooth connection
             if(bluetoothAdapter.isEnabled){
                 val devices = bluetoothAdapter.bondedDevices
@@ -74,9 +73,6 @@ class FirstScreenFragment : Fragment() {
                     var toast = Toast.makeText(this.context, "Nie jesteś połączony z przeciwnikiem! Połącz się z przeciwnikiem po bluetooth!", Toast.LENGTH_LONG)
                     toast.show()
                 }else{
-
-
- */
                     //giving popup screens for user
                     val intent = Intent(this.context, PopUpWindow::class.java)
                     intent.putExtra("popuptext", "Runda 1")
@@ -90,13 +86,8 @@ class FirstScreenFragment : Fragment() {
                     //going to second screen and starting the game
                     val action = R.id.action_firstScreenFragment_to_secondScreenFragment
             Navigation.findNavController(binding.root).navigate(action)
-
-            /*
                 }
-
             }
-
-         */
         }
 
         //action on clicking button which adds new word and category

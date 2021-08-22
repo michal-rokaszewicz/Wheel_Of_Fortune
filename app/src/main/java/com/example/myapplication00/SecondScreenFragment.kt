@@ -33,16 +33,6 @@ import java.util.*
 import kotlin.random.Random
 import com.example.myapplication00.BluetoothActivity
 
-//bluetooth
-val STATE_LISTENING: Int = 1
-val STATE_MESSAGE_RECEIVED: Int = 5
-const val MESSAGE_READ: Int = 0
-const val MESSAGE_WRITE: Int = 2
-const val MESSAGE_TOAST: Int = 3
-val MY_UUID = UUID.fromString("8ce255c0-223a-11e0-ac64-0803450c9a66")
-
-
-
 class SecondScreenFragment : Fragment(){
     lateinit var binding: FragmentSecondScreenBinding
 
@@ -51,7 +41,6 @@ class SecondScreenFragment : Fragment(){
 
     //variables for wheel animation
     var degrees: Int = 0
-    var width: Int = 0
 
     //variables for wheel functionality
     val wheelValues: Array<Int> = arrayOf(1, 300, 400, 600, 0, 900, 3, 500, 900, 300, 400, 550, 800, 500, 300, 500, 600, 2500, 600, 300, 700, 450, 350, 800)
@@ -126,9 +115,6 @@ class SecondScreenFragment : Fragment(){
         path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         folder = File(path,"/KoloFortuny")
         file = File(folder, "/words.txt")
-
-        //getting screen resolution
-        width = Resources.getSystem().displayMetrics.widthPixels
 
         //drawing word from file
         readWord()
