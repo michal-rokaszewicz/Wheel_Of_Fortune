@@ -47,6 +47,7 @@ class BluetoothActivity: AppCompatActivity() {
     public fun receiveCommand(){
         if(bluetoothSocket != null){
             try{
+                Toast.makeText(this, "dupa", Toast.LENGTH_SHORT).show()
                 output = bluetoothSocket!!.inputStream.readBytes()
             }catch(e: IOException){
                 e.printStackTrace()
