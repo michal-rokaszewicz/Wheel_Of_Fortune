@@ -90,10 +90,10 @@ class SecondScreenFragment : Fragment(){
 
             val bluetoothThing = BluetoothActivity()
             bluetoothThing.receiveCommand()
-
+            /*
             if(bluetoothThing.output != null){
                 Toast.makeText(this.context, "${bluetoothThing.output}", Toast.LENGTH_SHORT).show()
-            }
+            }*/
 
             mHandler.postDelayed(
                 mRunnable,

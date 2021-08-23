@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.loader.content.AsyncTaskLoader
 import kotlinx.coroutines.selects.select
@@ -30,6 +31,7 @@ class BluetoothActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         address = bluetoothAdapter.address
+        //Toast.makeText(this, "bluetooth is running", Toast.LENGTH_SHORT).show()
     }
 
     public fun sendCommand(input: String){

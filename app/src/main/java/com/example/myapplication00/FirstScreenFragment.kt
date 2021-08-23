@@ -3,6 +3,7 @@ package com.example.myapplication00
 import android.Manifest
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,22 +15,33 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
+import com.example.myapplication00.BluetoothActivity.Companion.bluetoothAdapter
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import java.io.File
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class FirstScreenFragment : Fragment() {
     lateinit var binding: FragmentFirstScreenBinding
-    lateinit var bluetoothAdapter: BluetoothAdapter
 
     //file
     lateinit var path: File
     lateinit var folder: File
     lateinit var file: File
+
+    //bluetooth
+    var devices = ArrayList<BluetoothDevice>()
+    var devicesMap = HashMap<String, BluetoothDevice>()
+    var mArrayAdapter: ArrayAdapter<String>? = null
+    val uuid: UUID = UUID.fromString("8989063a-c9af-463a-b3f1-f21d9b2b827b")
+    var message = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
