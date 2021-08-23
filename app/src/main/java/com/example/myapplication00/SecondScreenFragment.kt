@@ -85,10 +85,11 @@ class SecondScreenFragment : Fragment(){
 
         //
         mHandler = Handler()
+        val bluetoothThing = BluetoothActivity()
 
         mRunnable = Runnable {
 
-            val bluetoothThing = BluetoothActivity()
+
             bluetoothThing.receiveCommand()
             /*
             if(bluetoothThing.output != null){
@@ -315,7 +316,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterB.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('B')
-                binding.LetterB.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterB.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -323,7 +324,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterC.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('C')
-                binding.LetterC.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterC.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -331,7 +332,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterD.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('D')
-                binding.LetterD.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterD.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -339,7 +340,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterF.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('F')
-                binding.LetterF.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterF.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -347,7 +348,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterH.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('H')
-                binding.LetterH.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterH.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -355,7 +356,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterG.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('G')
-                binding.LetterG.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterG.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -363,7 +364,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterJ.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('J')
-                binding.LetterJ.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterJ.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -371,7 +372,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterK.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('K')
-                binding.LetterK.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterK.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -379,7 +380,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterL.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('L')
-                binding.LetterL.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterL.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -387,7 +388,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterM.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('M')
-                binding.LetterM.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterM.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -395,7 +396,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterN.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('N')
-                binding.LetterN.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterN.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -403,7 +404,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterP.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('P')
-                binding.LetterP.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterP.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -411,7 +412,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterR.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('R')
-                binding.LetterR.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterR.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -419,7 +420,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterS.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('S')
-                binding.LetterS.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterS.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -427,7 +428,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterT.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('T')
-                binding.LetterT.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterT.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -435,7 +436,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterV.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('V')
-                binding.LetterV.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterV.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -443,7 +444,6 @@ class SecondScreenFragment : Fragment(){
         binding.LetterW.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('W')
-                //binding.LetterW.setBackgroundColor(Color.rgb(70,70,70))
                 binding.LetterW.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
@@ -452,7 +452,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterX.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('X')
-                binding.LetterX.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterX.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -460,7 +460,7 @@ class SecondScreenFragment : Fragment(){
         binding.LetterZ.setOnClickListener {
             if(phaseNumber == 2) {
                 checkLetter('Z')
-                binding.LetterZ.setBackgroundColor(Color.rgb(70,70,70))
+                binding.LetterZ.isEnabled = false
             }else if(phaseNumber == 1){
                 toast.show()
             }
@@ -476,26 +476,25 @@ class SecondScreenFragment : Fragment(){
     }
 
     fun resetLetterButtonsColor(){
-        binding.LetterB.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterC.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterD.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterF.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterG.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterH.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterJ.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterK.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterL.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterM.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterN.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterP.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterR.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterS.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterT.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterX.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterZ.setBackgroundColor(Color.rgb(12, 82, 168))
-        //binding.LetterW.setBackgroundColor(Color.rgb(12, 82, 168))
-        binding.LetterV.setBackgroundColor(Color.rgb(12, 82, 168))
+        binding.LetterB.isEnabled = true
+        binding.LetterC.isEnabled = true
+        binding.LetterD.isEnabled = true
+        binding.LetterF.isEnabled = true
+        binding.LetterG.isEnabled = true
+        binding.LetterH.isEnabled = true
+        binding.LetterJ.isEnabled = true
+        binding.LetterK.isEnabled = true
+        binding.LetterL.isEnabled = true
+        binding.LetterM.isEnabled = true
+        binding.LetterN.isEnabled = true
+        binding.LetterP.isEnabled = true
+        binding.LetterR.isEnabled = true
+        binding.LetterS.isEnabled = true
+        binding.LetterT.isEnabled = true
+        binding.LetterV.isEnabled = true
         binding.LetterW.isEnabled = true
+        binding.LetterX.isEnabled = true
+        binding.LetterZ.isEnabled = true
     }
 /*
     val handler: Handler = object : Handler() {

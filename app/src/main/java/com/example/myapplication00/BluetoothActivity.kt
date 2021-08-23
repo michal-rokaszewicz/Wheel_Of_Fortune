@@ -31,7 +31,7 @@ class BluetoothActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         address = bluetoothAdapter.address
-        //Toast.makeText(this, "bluetooth is running", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "bluetooth is running", Toast.LENGTH_SHORT).show()
     }
 
     public fun sendCommand(input: String){
