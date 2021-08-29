@@ -35,4 +35,6 @@
     <string name="podaj_nowe_s_owo">podaj nowe słowo</string>
     <string name="stan_konta_0">Stan konta: 0$</string>
     <string name="runda_1">Runda 1</string>
+    <string name="sparuj_urz_dzenie">Sparuj urządzenie!</string>
+    <string name="szukaj_urz_dze">szukaj urządzeń</string>
 </resources>

@@ -3,18 +3,21 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/drawable-v24/ic_baseline_bluetooth.xml" value="0.21875" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_main.xml" value="0.2957427536231884" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_main2.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/activity_pop_up_window.xml" value="0.33" />
+        <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/example_item.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/first_activity.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_first_screen.xml" value="0.3484375" />
+        <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_pairing_bluetooth.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_round.xml" value="0.33" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/fragment_second_screen.xml" value="0.3625" />
         <entry key="..\:/KoloFortuny/PTMskam/app/src/main/res/layout/second_activity.xml" value="0.1" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

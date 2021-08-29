@@ -21,7 +21,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.Navigation
-import com.example.myapplication00.BluetoothActivity.Companion.bluetoothAdapter
 import com.example.myapplication00.databinding.FragmentFirstScreenBinding
 import java.io.File
 import java.util.*
@@ -36,25 +35,10 @@ class FirstScreenFragment : Fragment() {
     lateinit var folder: File
     lateinit var file: File
 
-    //bluetooth
-    var devices = ArrayList<BluetoothDevice>()
-    var devicesMap = HashMap<String, BluetoothDevice>()
-    var mArrayAdapter: ArrayAdapter<String>? = null
-    val uuid: UUID = UUID.fromString("8989063a-c9af-463a-b3f1-f21d9b2b827b")
-    var message = ""
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        //checking for bluetooth compatibility
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        if(bluetoothAdapter == null) {
-            var toast = Toast.makeText(this.context, "Twoje urządzenie nie wspiera bluetooth!", Toast.LENGTH_LONG)
-            toast.show()
-            Handler().postDelayed({System.exit(-1)}, 2500)
-        }
 
         binding = FragmentFirstScreenBinding.inflate(layoutInflater)
         val view = binding.root
@@ -78,29 +62,10 @@ class FirstScreenFragment : Fragment() {
 
         //action when clicking main button on first screen
         button.setOnClickListener{
-            //checking for bluetooth connection
-            if(bluetoothAdapter.isEnabled){
-                val devices = bluetoothAdapter.bondedDevices
-                if(devices.isEmpty() ){
-                    var toast = Toast.makeText(this.context, "Nie jesteś połączony z przeciwnikiem! Połącz się z przeciwnikiem po bluetooth!", Toast.LENGTH_LONG)
-                    toast.show()
-                }else{
-                    //giving popup screens for user
-                    val intent = Intent(this.context, PopUpWindow::class.java)
-                    intent.putExtra("popuptext", "Runda 1")
-                    intent.putExtra("darkstatusbar", false)
-                    startActivity(intent)
-
-                    Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
-                        intent.putExtra("darkstatusbar", false)
-                        startActivity(intent)}, 2500)
-
                     //going to second screen and starting the game
-                    val action = R.id.action_firstScreenFragment_to_secondScreenFragment
+                    val action = R.id.action_firstScreenFragment_to_bluetoothPairingFragment
             Navigation.findNavController(binding.root).navigate(action)
                 }
-            }
-        }
 
         //action on clicking button which adds new word and category
         addNewWord.setOnClickListener {

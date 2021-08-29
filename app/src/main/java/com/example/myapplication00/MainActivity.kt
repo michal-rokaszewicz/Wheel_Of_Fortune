@@ -29,5 +29,15 @@ class MainActivity : AppCompatActivity() {
             // if is denied, ask for it
             ActivityCompat.requestPermissions(this, permissions, 0)
         }
+
+        //checking for location access
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+            ActivityCompat.requestPermissions(this, permissions, 0)
+        }
     }
 }
