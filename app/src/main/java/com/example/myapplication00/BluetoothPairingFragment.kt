@@ -169,6 +169,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                 if (!exampleList.contains(temp) && device.name != null) {
                     exampleList.add(temp)
                     binding.recyclerView.adapter?.notifyItemInserted(exampleList.indexOf(temp))
+                    binding.recyclerView.adapter = adapter
                 }
 
                 Log.i(
