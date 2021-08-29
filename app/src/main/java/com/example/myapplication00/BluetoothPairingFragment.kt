@@ -53,6 +53,8 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
 
     lateinit var mAddress: String
 
+    private lateinit var mmRunnable: Runnable
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -96,6 +98,8 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
         binding.startGameButton.setOnClickListener{
             if(mBluetoothSocket != null) {
                 if (mBluetoothSocket!!.isConnected) {
+                    connectedThread.write("StartGame".toByteArray())
+
                     val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                     Navigation.findNavController(binding.root).navigate(action)
                 }
@@ -151,6 +155,10 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
                     Toast.makeText(this@BluetoothPairingFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
+                    if (receivedMessage == "StartGame"){
+                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
+                        Navigation.findNavController(binding.root).navigate(action)
+                    }
                 }
                 MESSAGE_TOAST -> {
                 }
@@ -189,8 +197,8 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
 
             while(mBluetoothSocket != null){
                 if(mBluetoothSocket!!.isConnected){
-                    //connectedThread = ConnectedThread(mBluetoothSocket!!)
-                    //connectedThread.start()
+                    connectedThread = ConnectedThread(mBluetoothSocket!!)
+                    connectedThread.start()
                     break
                 }
             }
