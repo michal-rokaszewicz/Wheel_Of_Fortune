@@ -1,9 +1,13 @@
 package com.example.myapplication00
 
+import android.annotation.SuppressLint
+import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.os.Message
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +18,9 @@ import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.lang.StringBuilder
 import java.util.*
 import kotlin.random.Random
@@ -67,6 +74,7 @@ class SecondScreenFragment : Fragment() {
 
     //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
     var word: String = ""
+    var cat: String = ""
     var missedLetters = ""
 
     //variable which indicates rounds of game (there are 5 rounds total)
@@ -78,6 +86,11 @@ class SecondScreenFragment : Fragment() {
     lateinit var path: File
     lateinit var folder: File
     lateinit var file: File
+
+    //from bluetoothPairingFragment
+    lateinit var receivedMessage: String
+    lateinit var sendMessage: String
+    private lateinit var connectedThread: SecondScreenFragment.ConnectedThread
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +104,19 @@ class SecondScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        connectedThread = ConnectedThread(BluetoothPairingFragment.mBluetoothSocket!!)
+        connectedThread.start()
+
+        if(BluetoothPairingFragment.isHost){
+            var com = readWord()
+            connectedThread.write("$com".toByteArray())
+        }
+        else{
+            var mNumber = receivedMessage.toInt()
+            readWord(mNumber)
+            Toast.makeText(this.context, word, Toast.LENGTH_LONG).show()
+        }
         //giving popup screens for user
         val intent = Intent(this.context, PopUpWindow::class.java)
         intent.putExtra("popuptext", "Runda 1")
@@ -100,6 +126,7 @@ class SecondScreenFragment : Fragment() {
         Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
             intent.putExtra("darkstatusbar", false)
             startActivity(intent)}, 2500)
+
 
         //go back action while clicking button
         binding.goBackButton.setOnClickListener {
@@ -211,35 +238,38 @@ class SecondScreenFragment : Fragment() {
     }
 
     //function that draws word from file
-    fun readWord() {
+    fun readWord(mNumber: Int = -1):Int {
         val bufferedReader = file.bufferedReader()
         val text: List<String> = bufferedReader.readLines()
 
         var number: Int = Random.nextInt(0, text.size - 1)
-
         while (chosenWords.contains(text[number])) {
             number = Random.nextInt(0, text.size - 1)
         }
-
         if (number != 0) {
             if (number % 2 != 0)
                 number -= 1
         }
 
+        if (mNumber != -1){
+            number = mNumber
+        }
+
+        word = text[mNumber]
+
         var underlines: String = ""
 
-        for (i in 0..text[number].length - 1) {
-            if (text[number][i] == ' ')
+        for (i in 0..word.length - 1) {
+            if (word[i] == ' ')
                 underlines += "   "
             else
                 underlines += " _ "
         }
 
-        word = text[number]
-
         chosenWords.plus(word)
         binding.category.text = text[number + 1]
         binding.word.text = underlines
+        return number
     }
 
     //function that changes wheel degree divided by 15 to table index
@@ -495,5 +525,92 @@ class SecondScreenFragment : Fragment() {
         binding.LetterW.isEnabled = true
         binding.LetterX.isEnabled = true
         binding.LetterZ.isEnabled = true
+    }
+
+    //
+    val mHandler = @SuppressLint("HandlerLeak")
+    object: Handler(){
+        override fun handleMessage(msg: Message) {
+
+            when(msg!!.what) {
+                MESSAGE_WRITE -> {
+                    val writeBuf = msg.obj as ByteArray
+                    val writeMessage = String(writeBuf)
+                    sendMessage = writeMessage
+                }
+                MESSAGE_READ -> {
+                    val readBuf = msg.obj as ByteArray
+                    val readMessage = String(readBuf, 0, msg.arg1)
+                    receivedMessage = readMessage
+                    Toast.makeText(this@SecondScreenFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
+                    if (receivedMessage == "StartGame"){
+                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
+                        Navigation.findNavController(binding.root).navigate(action)
+                    }
+                }
+                MESSAGE_TOAST -> {
+                }
+            }
+        }
+    }
+
+    private inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+
+        private val mmInStream: InputStream = mmSocket.inputStream
+        private val mmOutStream: OutputStream = mmSocket.outputStream
+        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+
+        override fun run() {
+            var numBytes: Int // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs.
+            while (true) {
+                // Read from the InputStream.
+                numBytes = try {
+                    mmInStream.read(mmBuffer)
+                } catch (e: IOException) {
+                    Log.d("BT Connection: ", "Input stream was disconnected", e)
+                    break
+                }
+
+                // Send the obtained bytes to the UI activity.
+                val readMsg = mHandler.obtainMessage(
+                    MESSAGE_READ, numBytes, -1,
+                    mmBuffer)
+                readMsg.sendToTarget()
+            }
+        }
+
+        // Call this from the main activity to send data to the remote device.
+        fun write(bytes: ByteArray) {
+            try {
+                mmOutStream.write(bytes)
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Error occurred when sending data", e)
+
+                // Send a failure message back to the activity.
+                val writeErrorMsg = mHandler.obtainMessage(MESSAGE_TOAST)
+                val bundle = Bundle().apply {
+                    putString("toast", "Couldn't send data to the other device")
+                }
+                writeErrorMsg.data = bundle
+                mHandler.sendMessage(writeErrorMsg)
+                return
+            }
+
+            // Share the sent message with the UI activity.
+            val writtenMsg = mHandler.obtainMessage(
+                MESSAGE_WRITE, -1, -1, mmBuffer)
+            writtenMsg.sendToTarget()
+        }
+
+        // Call this method from the main activity to shut down the connection.
+        fun cancel() {
+            try {
+                mmSocket.close()
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Could not close the connect socket", e)
+            }
+        }
     }
 }

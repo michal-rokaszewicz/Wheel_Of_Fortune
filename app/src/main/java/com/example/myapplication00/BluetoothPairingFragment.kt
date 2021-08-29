@@ -40,7 +40,11 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
     val MESSAGE_TOAST: Int = 2
 
     private var mBluetoothAdapter: BluetoothAdapter? = null
-    public var mBluetoothSocket: BluetoothSocket? = null
+
+    companion object {
+        var mBluetoothSocket: BluetoothSocket? = null
+        var isHost: Boolean = false
+    }
 
     var exampleList : MutableList<ItemExample> = mutableListOf()
     var adapter = AdapterExample(exampleList, this)
