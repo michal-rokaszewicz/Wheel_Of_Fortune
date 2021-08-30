@@ -39,10 +39,19 @@ import kotlin.system.exitProcess
 class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
     var STARTGAME: Int = 1
 
+    val MESSAGE_READ: Int = 0
+    val MESSAGE_WRITE: Int = 1
+    val MESSAGE_TOAST: Int = 2
+
     lateinit var binding: FragmentBluetoothPairingBinding
 
     var exampleList : MutableList<ItemExample> = mutableListOf()
     var adapter = AdapterExample(exampleList, this)
+
+    lateinit var connectedThread: ConnectedThread
+
+    var receivedMessage: String = ""
+    lateinit var sendMessage: String
 
     private lateinit var mmRunnable: Runnable
 
@@ -64,6 +73,9 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         activity?.registerReceiver(mReceiver, filter)
 
+        val activationThread = connectedActivationThread()
+        activationThread.start()
+
         binding.searchButton.setOnClickListener {
             var tmp = (activity as MainActivity).mBluetoothAdapter?.startDiscovery()
 
@@ -75,28 +87,13 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
         binding.startGameButton.setOnClickListener{
             if((activity as MainActivity).mBluetoothAdapter != null) {
                 if (((activity as MainActivity).mBluetoothSocket)!!.isConnected) {
-                    (activity as MainActivity).connectedThread.write("StartGame".toByteArray())
-                    if((activity as MainActivity).receivedMessage != "StartGame") {
-                        (activity as MainActivity).isHost = true
-                    }
+                    connectedThread.write("StartGame".toByteArray())
+                    (activity as MainActivity).isHost = true
                     val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                     Navigation.findNavController(binding.root).navigate(action)
                 }
             }
         }
-
-
-/*
-        binding.messageButton.setOnClickListener{
-            if(mBluetoothSocket != null){
-                if(mBluetoothSocket!!.isConnected){
-                    sendMessage = binding.messageEditText.text.toString()
-                    connectedThread.write(sendMessage.toByteArray())
-                }
-            }
-        }
-
- */
         return binding.root
     }
 
@@ -140,6 +137,106 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     ${device.address}
                     """.trimIndent()
                 )
+            }
+        }
+    }
+
+    inner class connectedActivationThread: Thread() {
+        override fun run(){
+            while((activity as MainActivity).mBluetoothSocket == null){
+            }
+
+            while((activity as MainActivity).mBluetoothSocket != null){
+                if((activity as MainActivity).mBluetoothSocket!!.isConnected){
+                    connectedThread = ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+                    connectedThread.start()
+                    break
+                }
+            }
+        }
+    }
+
+    val mHandler = @SuppressLint("HandlerLeak")
+    object: Handler(){
+        override fun handleMessage(msg: Message) {
+
+            when(msg!!.what) {
+                MESSAGE_WRITE -> {
+                    val writeBuf = msg.obj as ByteArray
+                    val writeMessage = String(writeBuf)
+                    sendMessage = writeMessage
+                }
+                MESSAGE_READ -> {
+                    val readBuf = msg.obj as ByteArray
+                    val readMessage = String(readBuf, 0, msg.arg1)
+                    receivedMessage = readMessage
+                    if(receivedMessage == "StartGame"){
+                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
+                        Navigation.findNavController(binding.root).navigate(action)
+                    }
+                }
+                MESSAGE_TOAST -> {
+                }
+            }
+        }
+    }
+
+    inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+
+        private val mmInStream: InputStream = mmSocket.inputStream
+        private val mmOutStream: OutputStream = mmSocket.outputStream
+        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+
+        override fun run() {
+            var numBytes: Int // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs.
+            while (!interrupted()) {
+                // Read from the InputStream.
+                numBytes = try {
+                    mmInStream.read(mmBuffer)
+                } catch (e: IOException) {
+                    Log.d("BT Connection: ", "Input stream was disconnected", e)
+                    break
+                }
+
+                // Send the obtained bytes to the UI activity.
+                val readMsg = mHandler.obtainMessage(
+                    MESSAGE_READ, numBytes, -1,
+                    mmBuffer)
+                readMsg.sendToTarget()
+            }
+        }
+
+        // Call this from the main activity to send data to the remote device.
+        fun write(bytes: ByteArray) {
+            try {
+                mmOutStream.write(bytes)
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Error occurred when sending data", e)
+
+                // Send a failure message back to the activity.
+                val writeErrorMsg = mHandler.obtainMessage(MESSAGE_TOAST)
+                val bundle = Bundle().apply {
+                    putString("toast", "Couldn't send data to the other device")
+                }
+                writeErrorMsg.data = bundle
+                mHandler.sendMessage(writeErrorMsg)
+                return
+            }
+
+            // Share the sent message with the UI activity.
+            val writtenMsg = mHandler.obtainMessage(
+                MESSAGE_WRITE, -1, -1, mmBuffer)
+            writtenMsg.sendToTarget()
+        }
+
+        // Call this method from the main activity to shut down the connection.
+        fun cancel() {
+            try {
+                mmSocket.close()
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Could not close the connect socket", e)
             }
         }
     }

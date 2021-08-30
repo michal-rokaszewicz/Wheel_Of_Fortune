@@ -69,6 +69,10 @@ class SecondScreenFragment : Fragment() {
     var money: Int = 0
     var moneyCache: Int = 0
 
+    var receivedMessage: String = ""
+    lateinit var sendMessage: String
+    lateinit var connectedThread: ConnectedThread
+
     //variable which indicates game phases like spinning wheel or guessing letters ect.
     var phaseNumber = 1
 
@@ -92,27 +96,25 @@ class SecondScreenFragment : Fragment() {
     ): View? {
         binding = FragmentSecondScreenBinding.inflate(layoutInflater)
         val view = binding.root
+        connectedThread = ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+        connectedThread.start()
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).connectedThread = (activity as MainActivity).ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
-        (activity as MainActivity).connectedThread.start()
-
         if((activity as MainActivity).isHost){
             var com = readWord()
-            (activity as MainActivity).connectedThread.write("$com".toByteArray())
             Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
+            connectedThread.write("$com".toByteArray())
         }
         else{
-            var mNumber = (activity as MainActivity).receivedMessage.toInt()
+            var mNumber = receivedMessage
             Toast.makeText(this.context,"$mNumber",Toast.LENGTH_LONG).show()
-            var com = readWord(mNumber)
-            Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
+            readWord(mNumber.toInt())
+            readWord()
         }
-
 
         //giving popup screens for user
         val intent = Intent(this.context, PopUpWindow::class.java)
@@ -137,6 +139,7 @@ class SecondScreenFragment : Fragment() {
 
         //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
+            connectedThread.write("hejka".toByteArray())
             if (phaseNumber == 1 || phaseNumber == 3) {
                 if (!animationFlag) {
                     animationFlag = true
@@ -513,5 +516,87 @@ class SecondScreenFragment : Fragment() {
         binding.LetterW.isEnabled = true
         binding.LetterX.isEnabled = true
         binding.LetterZ.isEnabled = true
+    }
+
+    val mHandler = @SuppressLint("HandlerLeak")
+    object: Handler(){
+        override fun handleMessage(msg: Message) {
+
+            when(msg!!.what) {
+                MESSAGE_WRITE -> {
+                    val writeBuf = msg.obj as ByteArray
+                    val writeMessage = String(writeBuf)
+                    sendMessage = writeMessage
+                }
+                MESSAGE_READ -> {
+                    val readBuf = msg.obj as ByteArray
+                    val readMessage = String(readBuf, 0, msg.arg1)
+                    receivedMessage = readMessage
+                    Toast.makeText(this@SecondScreenFragment.context, "$receivedMessage", Toast.LENGTH_SHORT).show()
+                }
+                MESSAGE_TOAST -> {
+                }
+            }
+        }
+    }
+
+    inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+
+        private val mmInStream: InputStream = mmSocket.inputStream
+        private val mmOutStream: OutputStream = mmSocket.outputStream
+        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+
+        override fun run() {
+            var numBytes: Int // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs.
+            while (true) {
+                // Read from the InputStream.
+                numBytes = try {
+                    mmInStream.read(mmBuffer)
+                } catch (e: IOException) {
+                    Log.d("BT Connection: ", "Input stream was disconnected", e)
+                    break
+                }
+
+                // Send the obtained bytes to the UI activity.
+                val readMsg = mHandler.obtainMessage(
+                    MESSAGE_READ, numBytes, -1,
+                    mmBuffer)
+                readMsg.sendToTarget()
+            }
+        }
+
+        // Call this from the main activity to send data to the remote device.
+        fun write(bytes: ByteArray) {
+            try {
+                mmOutStream.write(bytes)
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Error occurred when sending data", e)
+
+                // Send a failure message back to the activity.
+                val writeErrorMsg = mHandler.obtainMessage(MESSAGE_TOAST)
+                val bundle = Bundle().apply {
+                    putString("toast", "Couldn't send data to the other device")
+                }
+                writeErrorMsg.data = bundle
+                mHandler.sendMessage(writeErrorMsg)
+                return
+            }
+
+            // Share the sent message with the UI activity.
+            val writtenMsg = mHandler.obtainMessage(
+                MESSAGE_WRITE, -1, -1, mmBuffer)
+            writtenMsg.sendToTarget()
+        }
+
+        // Call this method from the main activity to shut down the connection.
+        fun cancel() {
+            try {
+                mmSocket.close()
+            } catch (e: IOException) {
+                Log.e("BT Connection: ", "Could not close the connect socket", e)
+            }
+        }
     }
 }
