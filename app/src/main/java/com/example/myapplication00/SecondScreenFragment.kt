@@ -74,7 +74,6 @@ class SecondScreenFragment : Fragment() {
 
     //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
     var word: String = ""
-    var cat: String = ""
     var missedLetters = ""
 
     //variable which indicates rounds of game (there are 5 rounds total)
@@ -90,7 +89,7 @@ class SecondScreenFragment : Fragment() {
     //from bluetoothPairingFragment
     lateinit var receivedMessage: String
     lateinit var sendMessage: String
-    private lateinit var connectedThread: SecondScreenFragment.ConnectedThread
+    //private lateinit var connectedThread: SecondScreenFragment.ConnectedThread
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,7 +103,8 @@ class SecondScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        Toast.makeText(this.context, "${(activity as MainActivity).isHost}", Toast.LENGTH_SHORT).show()
+/*
         connectedThread = ConnectedThread(BluetoothPairingFragment.mBluetoothSocket!!)
         connectedThread.start()
 
@@ -117,6 +117,8 @@ class SecondScreenFragment : Fragment() {
             readWord(mNumber)
             Toast.makeText(this.context, word, Toast.LENGTH_LONG).show()
         }
+
+ */
         //giving popup screens for user
         val intent = Intent(this.context, PopUpWindow::class.java)
         intent.putExtra("popuptext", "Runda 1")
@@ -139,7 +141,6 @@ class SecondScreenFragment : Fragment() {
         folder = File(path, "/KoloFortuny")
         file = File(folder, "/words.txt")
 
-        //drawing word from file
         readWord()
 
         if (round != 1) {
@@ -253,9 +254,10 @@ class SecondScreenFragment : Fragment() {
 
         if (mNumber != -1){
             number = mNumber
+            word = text[mNumber]
+        }else{
+            word = text[number]
         }
-
-        word = text[mNumber]
 
         var underlines: String = ""
 
@@ -527,7 +529,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterZ.isEnabled = true
     }
 
-    //
+    /*
     val mHandler = @SuppressLint("HandlerLeak")
     object: Handler(){
         override fun handleMessage(msg: Message) {
@@ -542,11 +544,7 @@ class SecondScreenFragment : Fragment() {
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
-                    Toast.makeText(this@SecondScreenFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
-                    if (receivedMessage == "StartGame"){
-                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
-                        Navigation.findNavController(binding.root).navigate(action)
-                    }
+                    //Toast.makeText(this@SecondScreenFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
                 }
                 MESSAGE_TOAST -> {
                 }
@@ -613,4 +611,6 @@ class SecondScreenFragment : Fragment() {
             }
         }
     }
+
+     */
 }
