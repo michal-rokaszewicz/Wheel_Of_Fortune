@@ -76,12 +76,15 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
             if((activity as MainActivity).mBluetoothAdapter != null) {
                 if (((activity as MainActivity).mBluetoothSocket)!!.isConnected) {
                     (activity as MainActivity).connectedThread.write("StartGame".toByteArray())
-                    (activity as MainActivity).isHost = true
+                    if((activity as MainActivity).receivedMessage != "StartGame") {
+                        (activity as MainActivity).isHost = true
+                    }
                     val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                     Navigation.findNavController(binding.root).navigate(action)
                 }
             }
         }
+
 
 /*
         binding.messageButton.setOnClickListener{

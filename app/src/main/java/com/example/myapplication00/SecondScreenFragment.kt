@@ -81,15 +81,10 @@ class SecondScreenFragment : Fragment() {
 
     var chosenWords: List<String> = emptyList()
 
-    //file
-    lateinit var path: File
-    lateinit var folder: File
-    lateinit var file: File
-
-    //from bluetoothPairingFragment
-    lateinit var receivedMessage: String
-    lateinit var sendMessage: String
-    //private lateinit var connectedThread: SecondScreenFragment.ConnectedThread
+    //assigning file paths
+    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val folder = File(path, "/KoloFortuny")
+    val file = File(folder, "/words.txt")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,22 +98,22 @@ class SecondScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Toast.makeText(this.context, "${(activity as MainActivity).isHost}", Toast.LENGTH_SHORT).show()
-/*
-        connectedThread = ConnectedThread(BluetoothPairingFragment.mBluetoothSocket!!)
-        connectedThread.start()
+        (activity as MainActivity).connectedThread = (activity as MainActivity).ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+        (activity as MainActivity).connectedThread.start()
 
-        if(BluetoothPairingFragment.isHost){
+        if((activity as MainActivity).isHost){
             var com = readWord()
-            connectedThread.write("$com".toByteArray())
+            (activity as MainActivity).connectedThread.write("$com".toByteArray())
+            Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
         }
         else{
-            var mNumber = receivedMessage.toInt()
-            readWord(mNumber)
-            Toast.makeText(this.context, word, Toast.LENGTH_LONG).show()
+            var mNumber = (activity as MainActivity).receivedMessage.toInt()
+            Toast.makeText(this.context,"$mNumber",Toast.LENGTH_LONG).show()
+            var com = readWord(mNumber)
+            Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
         }
 
- */
+
         //giving popup screens for user
         val intent = Intent(this.context, PopUpWindow::class.java)
         intent.putExtra("popuptext", "Runda 1")
@@ -135,13 +130,6 @@ class SecondScreenFragment : Fragment() {
             val action = R.id.action_secondScreenFragment_to_firstScreenFragment
             Navigation.findNavController(binding.root).navigate(action)
         }
-
-        //assigning file paths
-        path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        folder = File(path, "/KoloFortuny")
-        file = File(folder, "/words.txt")
-
-        readWord()
 
         if (round != 1) {
             popUp("Zakręć kołem fortuny!")
@@ -211,7 +199,7 @@ class SecondScreenFragment : Fragment() {
                         round++
                         missedLetters = ""
                         phaseNumber = 1
-                        readWord()
+                        //readWord()
                         moneyCache = 0
                         resetLetterButtonsColor()
                         Handler().postDelayed({ popUp("RUNDA ${round}") }, 2500)
@@ -254,10 +242,8 @@ class SecondScreenFragment : Fragment() {
 
         if (mNumber != -1){
             number = mNumber
-            word = text[mNumber]
-        }else{
-            word = text[number]
         }
+        word = text[number]
 
         var underlines: String = ""
 
@@ -528,89 +514,4 @@ class SecondScreenFragment : Fragment() {
         binding.LetterX.isEnabled = true
         binding.LetterZ.isEnabled = true
     }
-
-    /*
-    val mHandler = @SuppressLint("HandlerLeak")
-    object: Handler(){
-        override fun handleMessage(msg: Message) {
-
-            when(msg!!.what) {
-                MESSAGE_WRITE -> {
-                    val writeBuf = msg.obj as ByteArray
-                    val writeMessage = String(writeBuf)
-                    sendMessage = writeMessage
-                }
-                MESSAGE_READ -> {
-                    val readBuf = msg.obj as ByteArray
-                    val readMessage = String(readBuf, 0, msg.arg1)
-                    receivedMessage = readMessage
-                    //Toast.makeText(this@SecondScreenFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
-                }
-                MESSAGE_TOAST -> {
-                }
-            }
-        }
-    }
-
-    private inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
-
-        private val mmInStream: InputStream = mmSocket.inputStream
-        private val mmOutStream: OutputStream = mmSocket.outputStream
-        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
-
-        override fun run() {
-            var numBytes: Int // bytes returned from read()
-
-            // Keep listening to the InputStream until an exception occurs.
-            while (true) {
-                // Read from the InputStream.
-                numBytes = try {
-                    mmInStream.read(mmBuffer)
-                } catch (e: IOException) {
-                    Log.d("BT Connection: ", "Input stream was disconnected", e)
-                    break
-                }
-
-                // Send the obtained bytes to the UI activity.
-                val readMsg = mHandler.obtainMessage(
-                    MESSAGE_READ, numBytes, -1,
-                    mmBuffer)
-                readMsg.sendToTarget()
-            }
-        }
-
-        // Call this from the main activity to send data to the remote device.
-        fun write(bytes: ByteArray) {
-            try {
-                mmOutStream.write(bytes)
-            } catch (e: IOException) {
-                Log.e("BT Connection: ", "Error occurred when sending data", e)
-
-                // Send a failure message back to the activity.
-                val writeErrorMsg = mHandler.obtainMessage(MESSAGE_TOAST)
-                val bundle = Bundle().apply {
-                    putString("toast", "Couldn't send data to the other device")
-                }
-                writeErrorMsg.data = bundle
-                mHandler.sendMessage(writeErrorMsg)
-                return
-            }
-
-            // Share the sent message with the UI activity.
-            val writtenMsg = mHandler.obtainMessage(
-                MESSAGE_WRITE, -1, -1, mmBuffer)
-            writtenMsg.sendToTarget()
-        }
-
-        // Call this method from the main activity to shut down the connection.
-        fun cancel() {
-            try {
-                mmSocket.close()
-            } catch (e: IOException) {
-                Log.e("BT Connection: ", "Could not close the connect socket", e)
-            }
-        }
-    }
-
-     */
 }

@@ -258,8 +258,8 @@
 
     <EditText
         android:id="@+id/guessWord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="188dp"
+        android:layout_height="43dp"
         android:layout_marginStart="18dp"
         android:layout_marginTop="16dp"
         android:ems="10"
