@@ -33,9 +33,12 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
+import kotlin.concurrent.thread
 import kotlin.system.exitProcess
 
 class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
+    var STARTGAME: Int = 1
+
     lateinit var binding: FragmentBluetoothPairingBinding
 
     var exampleList : MutableList<ItemExample> = mutableListOf()
@@ -137,7 +140,5 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
             }
         }
     }
-
-
 
 }

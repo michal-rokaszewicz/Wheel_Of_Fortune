@@ -112,10 +112,13 @@ class MainActivity : AppCompatActivity() {
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
                     //Toast.makeText(this@MainActivity, "${receivedMessage}", Toast.LENGTH_SHORT).show()
+                    /*
                     if (receivedMessage == "StartGame") {
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                         Navigation.findNavController(binding.root).navigate(action)
                     }
+
+                     */
                 }
                 com.example.myapplication00.MESSAGE_TOAST -> {
                 }
