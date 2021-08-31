@@ -103,17 +103,21 @@ class SecondScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Toast.makeText(this.context, "${(activity as MainActivity).isHost}", Toast.LENGTH_LONG)
+            .show()
 
-        if((activity as MainActivity).isHost){
-            var com = readWord()
-            Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
-            connectedThread.write("$com".toByteArray())
-        }
-        else{
-            var mNumber = receivedMessage
-            Toast.makeText(this.context,"$mNumber",Toast.LENGTH_LONG).show()
-            readWord(mNumber.toInt())
-            readWord()
+        if (round == 1) {
+            Toast.makeText(this.context,"${(activity as MainActivity).wordNumber}",Toast.LENGTH_LONG).show()
+            readWord((activity as MainActivity).wordNumber)
+        } else if ((activity as MainActivity).isHost) {
+            (activity as MainActivity).wordNumber = readWord()
+            //Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
+            connectedThread.write("${(activity as MainActivity).wordNumber}".toByteArray())
+
+        } else {
+            (activity as MainActivity).wordNumber = receivedMessage.toInt()
+            //Toast.makeText(this.context,"$mNumber",Toast.LENGTH_LONG).show()
+            readWord((activity as MainActivity).wordNumber)
         }
 
         //giving popup screens for user
@@ -139,7 +143,6 @@ class SecondScreenFragment : Fragment() {
 
         //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
-            connectedThread.write("hejka".toByteArray())
             if (phaseNumber == 1 || phaseNumber == 3) {
                 if (!animationFlag) {
                     animationFlag = true

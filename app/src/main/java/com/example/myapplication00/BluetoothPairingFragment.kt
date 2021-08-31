@@ -34,6 +34,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.random.Random
 import kotlin.system.exitProcess
 
 class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
@@ -87,10 +88,18 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
         binding.startGameButton.setOnClickListener{
             if((activity as MainActivity).mBluetoothAdapter != null) {
                 if (((activity as MainActivity).mBluetoothSocket)!!.isConnected) {
-                    connectedThread.write("StartGame".toByteArray())
-                    (activity as MainActivity).isHost = true
-                    val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
-                    Navigation.findNavController(binding.root).navigate(action)
+
+                        (activity as MainActivity).wordNumber = Random.nextInt(0, (activity as MainActivity).text.size - 1)
+                    if ((activity as MainActivity).wordNumber != 0) {
+                        if ((activity as MainActivity).wordNumber % 2 != 0)
+                            (activity as MainActivity).wordNumber -= 1
+                    }
+
+                    connectedThread.write((activity as MainActivity).wordNumber.toString().toByteArray())
+                   Handler().postDelayed({connectedThread.write("StartGame".toByteArray())
+                       (activity as MainActivity).isHost = true
+                       val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
+                       Navigation.findNavController(binding.root).navigate(action)}, 2000)
                 }
             }
         }
@@ -170,9 +179,13 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
+
                     if(receivedMessage == "StartGame"){
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                         Navigation.findNavController(binding.root).navigate(action)
+                    }else{
+                        Toast.makeText(this@BluetoothPairingFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
+                        (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
                 }
                 MESSAGE_TOAST -> {
@@ -191,7 +204,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
             var numBytes: Int // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs.
-            while (!interrupted()) {
+            while (true) {
                 // Read from the InputStream.
                 numBytes = try {
                     mmInStream.read(mmBuffer)
@@ -199,7 +212,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     Log.d("BT Connection: ", "Input stream was disconnected", e)
                     break
                 }
-
                 // Send the obtained bytes to the UI activity.
                 val readMsg = mHandler.obtainMessage(
                     MESSAGE_READ, numBytes, -1,

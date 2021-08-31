@@ -13,6 +13,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Message
 import android.util.Log
@@ -24,6 +25,7 @@ import androidx.navigation.Navigation
 import com.example.bt.AdapterExample
 import com.example.bt.ItemExample
 import com.example.myapplication00.databinding.ActivityMainBinding
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -34,9 +36,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val REQUEST_ENABLE_BT = 1
 
+    val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val folder = File(path, "/KoloFortuny")
+    val file = File(folder, "/words.txt")
+
     var mBluetoothAdapter: BluetoothAdapter? = null
     var mBluetoothSocket: BluetoothSocket? = null
     var isHost: Boolean = false
+    var wordNumber = 0
+    val bufferedReader = file.bufferedReader()
+    val text: List<String> = bufferedReader.readLines()
     var mUUID: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     lateinit var mAddress: String
