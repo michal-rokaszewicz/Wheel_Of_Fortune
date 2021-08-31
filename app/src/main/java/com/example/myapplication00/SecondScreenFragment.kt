@@ -103,21 +103,23 @@ class SecondScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Toast.makeText(this.context, "${(activity as MainActivity).isHost}", Toast.LENGTH_LONG)
-            .show()
-
         if (round == 1) {
-            Toast.makeText(this.context,"${(activity as MainActivity).wordNumber}",Toast.LENGTH_LONG).show()
             readWord((activity as MainActivity).wordNumber)
-        } else if ((activity as MainActivity).isHost) {
-            (activity as MainActivity).wordNumber = readWord()
-            //Toast.makeText(this.context,"$com",Toast.LENGTH_LONG).show()
-            connectedThread.write("${(activity as MainActivity).wordNumber}".toByteArray())
-
+            if (!(activity as MainActivity).isHost) {
+                phaseNumber = 4
+            }
         } else {
-            (activity as MainActivity).wordNumber = receivedMessage.toInt()
-            //Toast.makeText(this.context,"$mNumber",Toast.LENGTH_LONG).show()
-            readWord((activity as MainActivity).wordNumber)
+            if ((activity as MainActivity).isHost) {
+                (activity as MainActivity).wordNumber = readWord()
+                connectedThread.write("${(activity as MainActivity).wordNumber}".toByteArray())
+
+            } else {
+                Handler().postDelayed({
+                    (activity as MainActivity).wordNumber = receivedMessage.toInt()
+                    readWord((activity as MainActivity).wordNumber)
+                }, 1000)
+                phaseNumber = 4
+            }
         }
 
         //giving popup screens for user
@@ -126,10 +128,13 @@ class SecondScreenFragment : Fragment() {
         intent.putExtra("darkstatusbar", false)
         startActivity(intent)
 
-        Handler().postDelayed({intent.putExtra("popuptext", "Zakręć kołem!")
-            intent.putExtra("darkstatusbar", false)
-            startActivity(intent)}, 2500)
-
+        if(phaseNumber != 4) {
+            Handler().postDelayed({
+                intent.putExtra("popuptext", "Zakręć kołem!")
+                intent.putExtra("darkstatusbar", false)
+                startActivity(intent)
+            }, 2500)
+        }
 
         //go back action while clicking button
         binding.goBackButton.setOnClickListener {
@@ -137,95 +142,124 @@ class SecondScreenFragment : Fragment() {
             Navigation.findNavController(binding.root).navigate(action)
         }
 
-        if (round != 1) {
+        if (round != 1 && phaseNumber != 4) {
             popUp("Zakręć kołem fortuny!")
         }
 
         //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
-            if (phaseNumber == 1 || phaseNumber == 3) {
-                if (!animationFlag) {
-                    animationFlag = true
-                    var rotationValue = Random.nextInt(1080, 1440)
-                    val rotation = RotateAnimation(
-                        degrees.toFloat(),
-                        (degrees + rotationValue).toFloat(),
-                        binding.fortuneWheel.pivotX,
-                        binding.fortuneWheel.pivotY
-                    )
-                    rotation.duration = 4000
-                    rotation.fillAfter = true
-                    rotation.interpolator = DecelerateInterpolator(0.8f)
-                    degrees += rotationValue
-                    binding.fortuneWheel.startAnimation(rotation)
-                    animationFlag = false
-                }
-                while (degrees > 360) {
-                    degrees -= 360
-                }
-
-                wheelValue = wheelValues[rounding((degrees.toDouble() / 15))]
-
-                Handler().postDelayed({
-                    if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3) {
-                        phaseNumber = 2
-                        moneyCache += wheelValue
-                    } else if (wheelValue == 0) {
-                        money = 0
-                        moneyCache = 0
-                        binding.moneyAccount.text = "Stan konta: ${money}$"
-                        popUp("Niestety zbankrutowałeś! Tracisz wszystkie środki")
-                    } else if (wheelValue == 1) {
-                        moneyCache = 0
-                        popUp("Tracisz turę!")
-                    } else if (wheelValue == 3) {
-                        moneyCache += 300
-                        popUp("Wylosowałeś możliwość dodatkowego zakręcenia kołem!")
+            if(phaseNumber != 4) {
+                if (phaseNumber == 1) {
+                    if (!animationFlag) {
+                        animationFlag = true
+                        var rotationValue = Random.nextInt(1080, 1440)
+                        val rotation = RotateAnimation(
+                            degrees.toFloat(),
+                            (degrees + rotationValue).toFloat(),
+                            binding.fortuneWheel.pivotX,
+                            binding.fortuneWheel.pivotY
+                        )
+                        rotation.duration = 4000
+                        rotation.fillAfter = true
+                        rotation.interpolator = DecelerateInterpolator(0.8f)
+                        degrees += rotationValue
+                        binding.fortuneWheel.startAnimation(rotation)
+                        animationFlag = false
                     }
-                }, 4000)
-                if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3)
-                    Handler().postDelayed({ popUp("Zgadnij spółgłoskę!") }, 4000)
+                    while (degrees > 360) {
+                        degrees -= 360
+                    }
 
-            } else if (phaseNumber == 2) {
-                val toast = Toast.makeText(
-                    this.context,
-                    "Nie możesz teraz zakręcić kołem!",
-                    Toast.LENGTH_SHORT
-                )
-                toast.show()
+                    wheelValue = wheelValues[rounding((degrees.toDouble() / 15))]
+
+                    Handler().postDelayed({
+                        if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3) {
+                            phaseNumber = 2
+                            moneyCache += wheelValue
+                        } else if (wheelValue == 0) {
+                            money = 0
+                            moneyCache = 0
+                            binding.moneyAccount.text = "Stan konta: ${money}$"
+                            popUp("Niestety zbankrutowałeś! Tracisz wszystkie środki")
+                        } else if (wheelValue == 1) {
+                            moneyCache = 0
+                            popUp("Tracisz turę!")
+                            phaseNumber = 4
+                            connectedThread.write("YourTurn".toByteArray())
+                        } else if (wheelValue == 3) {
+                            moneyCache += 300
+                            popUp("Wylosowałeś możliwość dodatkowego zakręcenia kołem!")
+                        }
+                    }, 4000)
+                    if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3)
+                        Handler().postDelayed({ popUp("Zgadnij spółgłoskę!") }, 4000)
+
+                } else if (phaseNumber == 2 || phaseNumber == 3) {
+                    val toast = Toast.makeText(
+                        this.context,
+                        "Nie możesz teraz zakręcić kołem!",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
+                }
+            }else {
+                Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT).show()
             }
         }
 
         //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
-            if (phaseNumber == 3) {
-                if (binding.guessWord.text.toString().uppercase() == word) {
-                    if (round != 5) {
-                        popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
-                        round++
-                        missedLetters = ""
-                        phaseNumber = 1
-                        //readWord()
-                        moneyCache = 0
-                        resetLetterButtonsColor()
-                        Handler().postDelayed({ popUp("RUNDA ${round}") }, 2500)
-                        binding.roundNumberText.text = "Runda ${round}"
-                    } else if (round == 5) {
-                        popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
-                        Navigation.findNavController(view).popBackStack()
+            if(phaseNumber == 4) {
+                if (phaseNumber == 3) {
+                    if (binding.guessWord.text.toString().uppercase() == word) {
+                        if (round != 5) {
+                            popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
+                            round++
+                            missedLetters = ""
+                            phaseNumber = 1
+                            //readWord()
+                            moneyCache = 0
+                            resetLetterButtonsColor()
+                            Handler().postDelayed({ popUp("RUNDA ${round}") }, 2500)
+                            binding.roundNumberText.text = "Runda ${round}"
+                        } else if (round == 5) {
+                            popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
+                            val action = R.id.action_secondScreenFragment_to_firstScreenFragment
+                            Navigation.findNavController(binding.root).navigate(action)
+                        }
+                    } else {
+                        popUp("Niestety nie udało ci się zgadnąć hasła!")
+                        phaseNumber = 4
                     }
+                    binding.guessWord.text.clear()
+                    phaseNumber = 1
                 } else {
-                    popUp("Niestety nie udało ci się zgadnąć hasła!")
+                    val toast = Toast.makeText(
+                        this.context,
+                        "Nie możesz teraz zgadywać hasła!",
+                        Toast.LENGTH_SHORT
+                    )
+                    toast.show()
                 }
-                binding.guessWord.text.clear()
-                phaseNumber = 1
-            } else {
-                val toast = Toast.makeText(
-                    this.context,
-                    "Nie możesz teraz zgadywać hasła!",
-                    Toast.LENGTH_SHORT
-                )
-                toast.show()
+            }else{
+                Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.nextTurnButton.setOnClickListener{
+            if(phaseNumber != 4) {
+                if (phaseNumber == 3) {
+                    connectedThread.write("YourTurn".toByteArray())
+                    phaseNumber = 4
+                } else {
+                    Toast.makeText(
+                        this.context,
+                        "Nie możesz teraz tego zrobić!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }else{
+                Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -321,7 +355,7 @@ class SecondScreenFragment : Fragment() {
             moneyCache = 0
             phaseNumber = 3
             Handler().postDelayed(
-                { popUp("Zakręć kołem ponownie lub spróbuj zgadnąć hasło!") },
+                { popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
                 2500
             )
             return true
@@ -330,163 +364,240 @@ class SecondScreenFragment : Fragment() {
         popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
         moneyCache = 0
         phaseNumber = 3
-        Handler().postDelayed({ popUp("Zakręć kołem ponownie lub spróbuj zgadnąć hasło!") }, 2500)
+        Handler().postDelayed({ popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") }, 2500)
         return false
     }
 
     //function which implements letter buttons actions
     fun letterButtons() {
         val toast = Toast.makeText(this.context, "Zakręć kołem!", Toast.LENGTH_SHORT)
+        val opposingToast = Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT)
         binding.LetterB.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('B')
-                binding.LetterB.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('B')
+                    binding.LetterB.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterC.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('C')
-                binding.LetterC.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('C')
+                    binding.LetterC.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterD.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('D')
-                binding.LetterD.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('D')
+                    binding.LetterD.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterF.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('F')
-                binding.LetterF.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('F')
+                    binding.LetterF.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterH.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('H')
-                binding.LetterH.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('H')
+                    binding.LetterH.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterG.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('G')
-                binding.LetterG.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('G')
+                    binding.LetterG.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterJ.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('J')
-                binding.LetterJ.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if( phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('J')
+                    binding.LetterJ.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterK.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('K')
-                binding.LetterK.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('K')
+                    binding.LetterK.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterL.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('L')
-                binding.LetterL.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('L')
+                    binding.LetterL.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterM.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('M')
-                binding.LetterM.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('M')
+                    binding.LetterM.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterN.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('N')
-                binding.LetterN.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('N')
+                    binding.LetterN.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterP.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('P')
-                binding.LetterP.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('P')
+                    binding.LetterP.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterR.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('R')
-                binding.LetterR.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('R')
+                    binding.LetterR.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterS.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('S')
-                binding.LetterS.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('S')
+                    binding.LetterS.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterT.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('T')
-                binding.LetterT.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('T')
+                    binding.LetterT.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterV.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('V')
-                binding.LetterV.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('V')
+                    binding.LetterV.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterW.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('W')
-                binding.LetterW.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('W')
+                    binding.LetterW.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterX.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('X')
-                binding.LetterX.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('X')
+                    binding.LetterX.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
         binding.LetterZ.setOnClickListener {
-            if (phaseNumber == 2) {
-                checkLetter('Z')
-                binding.LetterZ.isEnabled = false
-            } else if (phaseNumber == 1) {
-                toast.show()
+            if(phaseNumber != 4) {
+                if (phaseNumber == 2) {
+                    checkLetter('Z')
+                    binding.LetterZ.isEnabled = false
+                } else if (phaseNumber == 1) {
+                    toast.show()
+                }
+            }else{
+                opposingToast.show()
             }
         }
     }
@@ -535,7 +646,10 @@ class SecondScreenFragment : Fragment() {
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
-                    Toast.makeText(this@SecondScreenFragment.context, "$receivedMessage", Toast.LENGTH_SHORT).show()
+
+                    if(receivedMessage == "YourTurn"){
+                        phaseNumber = 1
+                    }
                 }
                 MESSAGE_TOAST -> {
                 }

@@ -94,7 +94,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                         if ((activity as MainActivity).wordNumber % 2 != 0)
                             (activity as MainActivity).wordNumber -= 1
                     }
-
                     connectedThread.write((activity as MainActivity).wordNumber.toString().toByteArray())
                    Handler().postDelayed({connectedThread.write("StartGame".toByteArray())
                        (activity as MainActivity).isHost = true
@@ -184,7 +183,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                         Navigation.findNavController(binding.root).navigate(action)
                     }else{
-                        Toast.makeText(this@BluetoothPairingFragment.context, "${receivedMessage}", Toast.LENGTH_SHORT).show()
                         (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
                 }

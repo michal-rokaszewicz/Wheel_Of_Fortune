@@ -88,12 +88,11 @@ class MainActivity : AppCompatActivity() {
         val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
         if (bluetoothAdapter == null) {
             // Device doesn't support Bluetooth
-            Toast.makeText(application, "BT is not support" , Toast.LENGTH_SHORT).show()
+            Toast.makeText(application, "BT is not supported" , Toast.LENGTH_SHORT).show()
         }
         if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-            Toast.makeText(applicationContext, "BT is Disable" , Toast.LENGTH_SHORT).show()
         }
     }
 

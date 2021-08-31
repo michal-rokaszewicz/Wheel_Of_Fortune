@@ -281,8 +281,10 @@
         android:id="@+id/arrowImage"
         android:layout_width="48dp"
         android:layout_height="111dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/strzalka"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/guessWord" />
 
@@ -317,5 +319,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/category"
         app:layout_constraintTop_toTopOf="@+id/category" />
+
+    <Button
+        android:id="@+id/nextTurnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Oddaj turę"
+        app:layout_constraintBottom_toTopOf="@+id/wordPushButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/wordPushButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
