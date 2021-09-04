@@ -177,7 +177,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
 
-                    Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
 
                     if(receivedMessage == "StartGame"){
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment

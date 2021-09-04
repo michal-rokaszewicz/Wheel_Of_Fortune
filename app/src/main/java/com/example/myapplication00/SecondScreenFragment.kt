@@ -71,8 +71,11 @@ class SecondScreenFragment : Fragment() {
 
     var receivedMessage: String = ""
     lateinit var sendMessage: String
-    lateinit var connectedThread: ConnectedThread
+    lateinit var connectedThread: SecondConnectedThread
     lateinit var nextTurnThread: NextTurnThread
+    lateinit var handler: Handler
+    lateinit var runnable: Runnable
+    var isRunning = false
 
     //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
     var word: String = ""
@@ -94,7 +97,7 @@ class SecondScreenFragment : Fragment() {
     ): View? {
         binding = FragmentSecondScreenBinding.inflate(layoutInflater)
         val view = binding.root
-        connectedThread = ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+        connectedThread = SecondConnectedThread((activity as MainActivity).mBluetoothSocket!!)
         connectedThread.start()
         nextTurnThread = NextTurnThread()
         nextTurnThread.start()
@@ -103,6 +106,43 @@ class SecondScreenFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        handler = Handler()
+
+        runnable = Runnable {
+            if(isRunning) {
+                if ((activity as MainActivity).phaseNumber == 1) {
+                    popUp("Twoja tura, zakręć kołem fortuny!")
+                    for (i in (activity as MainActivity).opponentLetters) {
+                        checkLetter(i, false)
+                        when(i){
+                         'B' -> binding.LetterB.isEnabled = false
+                         'C' -> binding.LetterC.isEnabled = false
+                         'D' -> binding.LetterD.isEnabled = false
+                         'F' -> binding.LetterF.isEnabled = false
+                         'G' -> binding.LetterG.isEnabled = false
+                         'H' -> binding.LetterH.isEnabled = false
+                         'J' -> binding.LetterJ.isEnabled = false
+                         'K' -> binding.LetterK.isEnabled = false
+                         'L' -> binding.LetterL.isEnabled = false
+                         'M' -> binding.LetterM.isEnabled = false
+                         'N' -> binding.LetterN.isEnabled = false
+                         'P' -> binding.LetterP.isEnabled = false
+                         'R' -> binding.LetterR.isEnabled = false
+                         'S' -> binding.LetterS.isEnabled = false
+                         'T' -> binding.LetterT.isEnabled = false
+                         'X' -> binding.LetterX.isEnabled = false
+                         'Z' -> binding.LetterZ.isEnabled = false
+                         'W' -> binding.LetterW.isEnabled = false
+                         'V' -> binding.LetterV.isEnabled = false
+                        }
+                    }
+                    isRunning = false
+                }
+            }
+            handler.postDelayed(runnable, 100)
+        }
+        handler.postDelayed(runnable, 100)
 
         if (round == 1) {
             readWord((activity as MainActivity).wordNumber)
@@ -210,7 +250,7 @@ class SecondScreenFragment : Fragment() {
 
         //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
-            if((activity as MainActivity).phaseNumber == 4) {
+            if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
                         if (round != 5) {
@@ -232,7 +272,7 @@ class SecondScreenFragment : Fragment() {
                         popUp("Niestety nie udało ci się zgadnąć hasła!")
                         (activity as MainActivity).phaseNumber = 4
                     }
-                        binding.guessWord.text.clear()
+                    binding.guessWord.text.clear()
                     (activity as MainActivity).phaseNumber = 1
                 } else {
                     val toast = Toast.makeText(
@@ -686,7 +726,7 @@ class SecondScreenFragment : Fragment() {
         }
     }
 
-    inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+    inner class SecondConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
 
         private val mmInStream: InputStream = mmSocket.inputStream
         private val mmOutStream: OutputStream = mmSocket.outputStream
@@ -747,23 +787,28 @@ class SecondScreenFragment : Fragment() {
 
     inner class NextTurnThread(): Thread(){
         override fun run(){
+            /*
             while(true) {
                 while (true) {
                     if ((activity as MainActivity).phaseNumber == 1 && (activity as MainActivity).opponentLetters != "") {
                         popUp("Twoja tura, zakręć kołem fortuny!")
                         for (i in (activity as MainActivity).opponentLetters) {
-                            checkLetter(i, false)
                         }
                         break
                     }
                 }
 
+
+             */
                 while (true) {
                     if ((activity as MainActivity).phaseNumber == 4) {
-                        break
+                        isRunning = true
                     }
                 }
+            /*
             }
+
+             */
         }
     }
 }
