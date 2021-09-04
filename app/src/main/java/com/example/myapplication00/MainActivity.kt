@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     //variable which indicates game phases like spinning wheel or guessing letters ect.
     var phaseNumber = 1
+    var opponentLetters = ""
 
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val folder = File(path, "/KoloFortuny")
