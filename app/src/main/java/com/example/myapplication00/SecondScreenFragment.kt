@@ -349,24 +349,31 @@ class SecondScreenFragment : Fragment() {
         }
         if (letterFlag == 1) {
             binding.word.text = totalText.toString()
-            popUp("Brawo! Zgadłeś spółgłoskę, kwota: ${moneyCache}$ ląduje na twoim koncie!")
+            if (pop)
+                popUp("Brawo! Zgadłeś spółgłoskę, kwota: ${moneyCache}$ ląduje na twoim koncie!")
             money += moneyCache
             binding.moneyAccount.text = "Stan konta: ${money}$"
             moneyCache = 0
             if (pop)
                 (activity as MainActivity).phaseNumber = 3
             Handler().postDelayed(
-                { popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
+                { if (pop)
+                    popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
                 2500
             )
             return true
         }
         missedLetters += letter
-        popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
+        if (pop)
+            popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
         moneyCache = 0
         if (pop)
             (activity as MainActivity).phaseNumber = 3
-        Handler().postDelayed({ popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") }, 2500)
+        Handler().postDelayed({
+            if (pop)
+                popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
+        2500
+    )
         return false
     }
 
