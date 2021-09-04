@@ -44,7 +44,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
     val MESSAGE_WRITE: Int = 1
     val MESSAGE_TOAST: Int = 2
 
-    var isRunning: Boolean = true
     lateinit var binding: FragmentBluetoothPairingBinding
 
     var exampleList : MutableList<ItemExample> = mutableListOf()
@@ -96,7 +95,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     connectedThread.write((activity as MainActivity).wordNumber.toString().toByteArray())
                    Handler().postDelayed({connectedThread.write("StartGame".toByteArray())
                        (activity as MainActivity).isHost = true
-                       isRunning = false
                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                        Navigation.findNavController(binding.root).navigate(action)}, 2000)
                 }
@@ -179,8 +177,9 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
 
+                    Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+
                     if(receivedMessage == "StartGame"){
-                        isRunning = false
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                         Navigation.findNavController(binding.root).navigate(action)
                     }else if(receivedMessage == "YourTurn"){
@@ -208,8 +207,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
 
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
-                if(!isRunning)
-                    return
                 // Read from the InputStream.
                 numBytes = try {
                     mmInStream.read(mmBuffer)

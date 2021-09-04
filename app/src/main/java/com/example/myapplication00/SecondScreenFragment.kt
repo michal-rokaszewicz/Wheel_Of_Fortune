@@ -71,7 +71,7 @@ class SecondScreenFragment : Fragment() {
 
     var receivedMessage: String = ""
     lateinit var sendMessage: String
-    lateinit var connectedThread: SecondConnectedThread
+    lateinit var connectedThread: ConnectedThread
     lateinit var nextTurnThread: NextTurnThread
 
     //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
@@ -94,7 +94,7 @@ class SecondScreenFragment : Fragment() {
     ): View? {
         binding = FragmentSecondScreenBinding.inflate(layoutInflater)
         val view = binding.root
-        connectedThread = SecondConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+        connectedThread = ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
         connectedThread.start()
         nextTurnThread = NextTurnThread()
         nextTurnThread.start()
@@ -686,7 +686,7 @@ class SecondScreenFragment : Fragment() {
         }
     }
 
-    inner class SecondConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+    inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
 
         private val mmInStream: InputStream = mmSocket.inputStream
         private val mmOutStream: OutputStream = mmSocket.outputStream
@@ -749,7 +749,7 @@ class SecondScreenFragment : Fragment() {
         override fun run(){
             while(true) {
                 while (true) {
-                    if ((activity as MainActivity).phaseNumber == 1) {
+                    if ((activity as MainActivity).phaseNumber == 1 && (activity as MainActivity).opponentLetters != "") {
                         popUp("Twoja tura, zakręć kołem fortuny!")
                         for (i in (activity as MainActivity).opponentLetters) {
                             checkLetter(i, false)
