@@ -44,6 +44,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
     val MESSAGE_WRITE: Int = 1
     val MESSAGE_TOAST: Int = 2
 
+    var isRunning: Boolean = true
     lateinit var binding: FragmentBluetoothPairingBinding
 
     var exampleList : MutableList<ItemExample> = mutableListOf()
@@ -53,8 +54,6 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
 
     var receivedMessage: String = ""
     lateinit var sendMessage: String
-
-    private lateinit var mmRunnable: Runnable
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,6 +96,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     connectedThread.write((activity as MainActivity).wordNumber.toString().toByteArray())
                    Handler().postDelayed({connectedThread.write("StartGame".toByteArray())
                        (activity as MainActivity).isHost = true
+                       isRunning = false
                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                        Navigation.findNavController(binding.root).navigate(action)}, 2000)
                 }
@@ -180,8 +180,11 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     receivedMessage = readMessage
 
                     if(receivedMessage == "StartGame"){
+                        isRunning = false
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
                         Navigation.findNavController(binding.root).navigate(action)
+                    }else if(receivedMessage == "YourTurn"){
+                        (activity as MainActivity).phaseNumber = 1
                     }else{
                         (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
@@ -203,6 +206,8 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
 
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
+                if(!isRunning)
+                    return
                 // Read from the InputStream.
                 numBytes = try {
                     mmInStream.read(mmBuffer)

@@ -71,10 +71,7 @@ class SecondScreenFragment : Fragment() {
 
     var receivedMessage: String = ""
     lateinit var sendMessage: String
-    lateinit var connectedThread: ConnectedThread
-
-    //variable which indicates game phases like spinning wheel or guessing letters ect.
-    var phaseNumber = 1
+    lateinit var connectedThread: SecondConnectedThread
 
     //variables which contains the word that player is trying to guess and letters which he tried to guess but missed
     var word: String = ""
@@ -96,17 +93,18 @@ class SecondScreenFragment : Fragment() {
     ): View? {
         binding = FragmentSecondScreenBinding.inflate(layoutInflater)
         val view = binding.root
-        connectedThread = ConnectedThread((activity as MainActivity).mBluetoothSocket!!)
+        connectedThread = SecondConnectedThread((activity as MainActivity).mBluetoothSocket!!)
         connectedThread.start()
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         if (round == 1) {
             readWord((activity as MainActivity).wordNumber)
             if (!(activity as MainActivity).isHost) {
-                phaseNumber = 4
+                (activity as MainActivity).phaseNumber = 4
             }
         } else {
             if ((activity as MainActivity).isHost) {
@@ -118,7 +116,7 @@ class SecondScreenFragment : Fragment() {
                     (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     readWord((activity as MainActivity).wordNumber)
                 }, 1000)
-                phaseNumber = 4
+                (activity as MainActivity).phaseNumber = 4
             }
         }
 
@@ -128,7 +126,7 @@ class SecondScreenFragment : Fragment() {
         intent.putExtra("darkstatusbar", false)
         startActivity(intent)
 
-        if(phaseNumber != 4) {
+        if((activity as MainActivity).phaseNumber != 4) {
             Handler().postDelayed({
                 intent.putExtra("popuptext", "Zakręć kołem!")
                 intent.putExtra("darkstatusbar", false)
@@ -142,14 +140,14 @@ class SecondScreenFragment : Fragment() {
             Navigation.findNavController(binding.root).navigate(action)
         }
 
-        if (round != 1 && phaseNumber != 4) {
+        if (round != 1 && (activity as MainActivity).phaseNumber != 4) {
             popUp("Zakręć kołem fortuny!")
         }
 
         //wheel animation and functionality on clicking button
         binding.startWheelButton.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 1) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 1) {
                     if (!animationFlag) {
                         animationFlag = true
                         var rotationValue = Random.nextInt(1080, 1440)
@@ -174,7 +172,7 @@ class SecondScreenFragment : Fragment() {
 
                     Handler().postDelayed({
                         if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3) {
-                            phaseNumber = 2
+                            (activity as MainActivity).phaseNumber = 2
                             moneyCache += wheelValue
                         } else if (wheelValue == 0) {
                             money = 0
@@ -184,7 +182,7 @@ class SecondScreenFragment : Fragment() {
                         } else if (wheelValue == 1) {
                             moneyCache = 0
                             popUp("Tracisz turę!")
-                            phaseNumber = 4
+                            (activity as MainActivity).phaseNumber = 4
                             connectedThread.write("YourTurn".toByteArray())
                         } else if (wheelValue == 3) {
                             moneyCache += 300
@@ -194,7 +192,7 @@ class SecondScreenFragment : Fragment() {
                     if (wheelValue != 0 && wheelValue != 1 && wheelValue != 3)
                         Handler().postDelayed({ popUp("Zgadnij spółgłoskę!") }, 4000)
 
-                } else if (phaseNumber == 2 || phaseNumber == 3) {
+                } else if ((activity as MainActivity).phaseNumber == 2 || (activity as MainActivity).phaseNumber == 3) {
                     val toast = Toast.makeText(
                         this.context,
                         "Nie możesz teraz zakręcić kołem!",
@@ -209,14 +207,14 @@ class SecondScreenFragment : Fragment() {
 
         //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
-            if(phaseNumber == 4) {
-                if (phaseNumber == 3) {
+            if((activity as MainActivity).phaseNumber == 4) {
+                if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
                         if (round != 5) {
                             popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
                             round++
                             missedLetters = ""
-                            phaseNumber = 1
+                            (activity as MainActivity).phaseNumber = 1
                             //readWord()
                             moneyCache = 0
                             resetLetterButtonsColor()
@@ -229,10 +227,10 @@ class SecondScreenFragment : Fragment() {
                         }
                     } else {
                         popUp("Niestety nie udało ci się zgadnąć hasła!")
-                        phaseNumber = 4
+                        (activity as MainActivity).phaseNumber = 4
                     }
-                    binding.guessWord.text.clear()
-                    phaseNumber = 1
+                        binding.guessWord.text.clear()
+                    (activity as MainActivity).phaseNumber = 1
                 } else {
                     val toast = Toast.makeText(
                         this.context,
@@ -247,10 +245,10 @@ class SecondScreenFragment : Fragment() {
         }
 
         binding.nextTurnButton.setOnClickListener{
-            if(phaseNumber != 4) {
-                if (phaseNumber == 3) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 3) {
                     connectedThread.write("YourTurn".toByteArray())
-                    phaseNumber = 4
+                    (activity as MainActivity).phaseNumber = 4
                 } else {
                     Toast.makeText(
                         this.context,
@@ -353,7 +351,7 @@ class SecondScreenFragment : Fragment() {
             money += moneyCache
             binding.moneyAccount.text = "Stan konta: ${money}$"
             moneyCache = 0
-            phaseNumber = 3
+            (activity as MainActivity).phaseNumber = 3
             Handler().postDelayed(
                 { popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
                 2500
@@ -363,7 +361,7 @@ class SecondScreenFragment : Fragment() {
         missedLetters += letter
         popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
         moneyCache = 0
-        phaseNumber = 3
+        (activity as MainActivity).phaseNumber = 3
         Handler().postDelayed({ popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") }, 2500)
         return false
     }
@@ -373,11 +371,11 @@ class SecondScreenFragment : Fragment() {
         val toast = Toast.makeText(this.context, "Zakręć kołem!", Toast.LENGTH_SHORT)
         val opposingToast = Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT)
         binding.LetterB.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('B')
                     binding.LetterB.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -385,11 +383,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterC.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('C')
                     binding.LetterC.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -397,11 +395,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterD.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('D')
                     binding.LetterD.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -409,11 +407,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterF.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('F')
                     binding.LetterF.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -421,11 +419,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterH.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('H')
                     binding.LetterH.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -433,11 +431,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterG.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('G')
                     binding.LetterG.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -445,11 +443,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterJ.setOnClickListener {
-            if( phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if( (activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('J')
                     binding.LetterJ.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -457,11 +455,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterK.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('K')
                     binding.LetterK.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -469,11 +467,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterL.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('L')
                     binding.LetterL.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -481,11 +479,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterM.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('M')
                     binding.LetterM.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -493,11 +491,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterN.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('N')
                     binding.LetterN.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -505,11 +503,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterP.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('P')
                     binding.LetterP.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -517,11 +515,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterR.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('R')
                     binding.LetterR.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -529,11 +527,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterS.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('S')
                     binding.LetterS.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -541,11 +539,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterT.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('T')
                     binding.LetterT.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -553,11 +551,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterV.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('V')
                     binding.LetterV.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -565,11 +563,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterW.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('W')
                     binding.LetterW.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -577,11 +575,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterX.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('X')
                     binding.LetterX.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -589,11 +587,11 @@ class SecondScreenFragment : Fragment() {
             }
         }
         binding.LetterZ.setOnClickListener {
-            if(phaseNumber != 4) {
-                if (phaseNumber == 2) {
+            if((activity as MainActivity).phaseNumber != 4) {
+                if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('Z')
                     binding.LetterZ.isEnabled = false
-                } else if (phaseNumber == 1) {
+                } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
                 }
             }else{
@@ -632,7 +630,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterZ.isEnabled = true
     }
 
-    val mHandler = @SuppressLint("HandlerLeak")
+    val secondmHandler = @SuppressLint("HandlerLeak")
     object: Handler(){
         override fun handleMessage(msg: Message) {
 
@@ -646,10 +644,6 @@ class SecondScreenFragment : Fragment() {
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
-
-                    if(receivedMessage == "YourTurn"){
-                        phaseNumber = 1
-                    }
                 }
                 MESSAGE_TOAST -> {
                 }
@@ -657,7 +651,7 @@ class SecondScreenFragment : Fragment() {
         }
     }
 
-    inner class ConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
+    inner class SecondConnectedThread(private val mmSocket: BluetoothSocket) : Thread() {
 
         private val mmInStream: InputStream = mmSocket.inputStream
         private val mmOutStream: OutputStream = mmSocket.outputStream
@@ -675,9 +669,8 @@ class SecondScreenFragment : Fragment() {
                     Log.d("BT Connection: ", "Input stream was disconnected", e)
                     break
                 }
-
                 // Send the obtained bytes to the UI activity.
-                val readMsg = mHandler.obtainMessage(
+                val readMsg = secondmHandler.obtainMessage(
                     MESSAGE_READ, numBytes, -1,
                     mmBuffer)
                 readMsg.sendToTarget()
@@ -692,17 +685,17 @@ class SecondScreenFragment : Fragment() {
                 Log.e("BT Connection: ", "Error occurred when sending data", e)
 
                 // Send a failure message back to the activity.
-                val writeErrorMsg = mHandler.obtainMessage(MESSAGE_TOAST)
+                val writeErrorMsg = secondmHandler.obtainMessage(MESSAGE_TOAST)
                 val bundle = Bundle().apply {
                     putString("toast", "Couldn't send data to the other device")
                 }
                 writeErrorMsg.data = bundle
-                mHandler.sendMessage(writeErrorMsg)
+                secondmHandler.sendMessage(writeErrorMsg)
                 return
             }
 
             // Share the sent message with the UI activity.
-            val writtenMsg = mHandler.obtainMessage(
+            val writtenMsg = secondmHandler.obtainMessage(
                 MESSAGE_WRITE, -1, -1, mmBuffer)
             writtenMsg.sendToTarget()
         }

@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val REQUEST_ENABLE_BT = 1
 
+    //variable which indicates game phases like spinning wheel or guessing letters ect.
+    var phaseNumber = 1
+
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val folder = File(path, "/KoloFortuny")
     val file = File(folder, "/words.txt")
