@@ -315,19 +315,21 @@ class SecondScreenFragment : Fragment() {
     }
 
     //function which checks guessing letters
-    fun checkLetter(letter: Char): Boolean {
+    fun checkLetter(letter: Char, pop: Boolean): Boolean {
         var letterFlag = 0
         var totalText = binding.word.text
         for (i in 0..missedLetters.length - 1) {
             if (letter == missedLetters[i]) {
-                popUp("Już próbowałeś zgadnąć tą literę! spróbuj inną!")
+                if (pop)
+                    popUp("Już próbowałeś zgadnąć tą literę! spróbuj inną!")
                 return false
             }
         }
 
         for (i in 0..binding.word.text.length - 1) {
             if (letter == binding.word.text[i]) {
-                popUp("Już zgadłeś tą literę! Spróbuj innej!")
+                if (pop)
+                    popUp("Już zgadłeś tą literę! Spróbuj innej!")
                 return false
             }
         }
@@ -351,7 +353,8 @@ class SecondScreenFragment : Fragment() {
             money += moneyCache
             binding.moneyAccount.text = "Stan konta: ${money}$"
             moneyCache = 0
-            (activity as MainActivity).phaseNumber = 3
+            if (pop)
+                (activity as MainActivity).phaseNumber = 3
             Handler().postDelayed(
                 { popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") },
                 2500
@@ -361,7 +364,8 @@ class SecondScreenFragment : Fragment() {
         missedLetters += letter
         popUp("Niestety nie udało się zgadnąć spółgłoski. Kwota: ${moneyCache}$ przepada!")
         moneyCache = 0
-        (activity as MainActivity).phaseNumber = 3
+        if (pop)
+            (activity as MainActivity).phaseNumber = 3
         Handler().postDelayed({ popUp("Spróbuj zgadnąć hasło lub oddaj turę przeciwnikowi!") }, 2500)
         return false
     }
@@ -370,10 +374,11 @@ class SecondScreenFragment : Fragment() {
     fun letterButtons() {
         val toast = Toast.makeText(this.context, "Zakręć kołem!", Toast.LENGTH_SHORT)
         val opposingToast = Toast.makeText(this.context, "Teraz jest tura przeciwnika!", Toast.LENGTH_SHORT)
+
         binding.LetterB.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('B')
+                    checkLetter('B',true)
                     binding.LetterB.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -385,7 +390,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterC.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('C')
+                    checkLetter('C',true)
                     binding.LetterC.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -397,7 +402,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterD.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('D')
+                    checkLetter('D',true)
                     binding.LetterD.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -409,7 +414,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterF.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('F')
+                    checkLetter('F',true)
                     binding.LetterF.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -421,7 +426,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterH.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('H')
+                    checkLetter('H',true)
                     binding.LetterH.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -433,7 +438,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterG.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('G')
+                    checkLetter('G',true)
                     binding.LetterG.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -445,7 +450,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterJ.setOnClickListener {
             if( (activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('J')
+                    checkLetter('J',true)
                     binding.LetterJ.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -457,7 +462,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterK.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('K')
+                    checkLetter('K',true)
                     binding.LetterK.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -469,7 +474,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterL.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('L')
+                    checkLetter('L',true)
                     binding.LetterL.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -481,7 +486,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterM.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('M')
+                    checkLetter('M',true)
                     binding.LetterM.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -493,7 +498,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterN.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('N')
+                    checkLetter('N',true)
                     binding.LetterN.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -505,7 +510,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterP.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('P')
+                    checkLetter('P',true)
                     binding.LetterP.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -517,7 +522,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterR.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('R')
+                    checkLetter('R',true)
                     binding.LetterR.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -529,7 +534,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterS.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('S')
+                    checkLetter('S',true)
                     binding.LetterS.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -541,7 +546,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterT.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('T')
+                    checkLetter('T',true)
                     binding.LetterT.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -553,7 +558,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterV.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('V')
+                    checkLetter('V',true)
                     binding.LetterV.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -565,7 +570,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterW.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('W')
+                    checkLetter('W',true)
                     binding.LetterW.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -577,7 +582,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterX.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('X')
+                    checkLetter('X',true)
                     binding.LetterX.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -589,7 +594,7 @@ class SecondScreenFragment : Fragment() {
         binding.LetterZ.setOnClickListener {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
-                    checkLetter('Z')
+                    checkLetter('Z',true)
                     binding.LetterZ.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()

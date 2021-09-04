@@ -60,31 +60,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         //check permissions
-        if (ContextCompat.checkSelfPermission(
+        if ((ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
-        ) {
+        ) && (ContextCompat.checkSelfPermission(    //checking for location access
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED)
+        ){
             val permissions = arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION
             )
             // if is denied, ask for it
             ActivityCompat.requestPermissions(this, permissions, 0)
         }
 
-        //checking for location access
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-            ActivityCompat.requestPermissions(this, permissions, 0)
-        }
         bluetoothInit()
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-
     }
 
     fun bluetoothInit(){
