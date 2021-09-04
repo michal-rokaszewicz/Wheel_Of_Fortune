@@ -390,6 +390,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('B',true)
+                    connectedThread.write("B".toByteArray())
                     binding.LetterB.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -402,6 +403,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('C',true)
+                    connectedThread.write("C".toByteArray())
                     binding.LetterC.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -414,6 +416,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('D',true)
+                    connectedThread.write("D".toByteArray())
                     binding.LetterD.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -426,6 +429,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('F',true)
+                    connectedThread.write("F".toByteArray())
                     binding.LetterF.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -438,6 +442,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('H',true)
+                    connectedThread.write("H".toByteArray())
                     binding.LetterH.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -450,6 +455,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('G',true)
+                    connectedThread.write("G".toByteArray())
                     binding.LetterG.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -462,6 +468,7 @@ class SecondScreenFragment : Fragment() {
             if( (activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('J',true)
+                    connectedThread.write("J".toByteArray())
                     binding.LetterJ.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -474,6 +481,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('K',true)
+                    connectedThread.write("K".toByteArray())
                     binding.LetterK.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -486,6 +494,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('L',true)
+                    connectedThread.write("L".toByteArray())
                     binding.LetterL.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -498,6 +507,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('M',true)
+                    connectedThread.write("M".toByteArray())
                     binding.LetterM.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -510,6 +520,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('N',true)
+                    connectedThread.write("N".toByteArray())
                     binding.LetterN.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -522,6 +533,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('P',true)
+                    connectedThread.write("P".toByteArray())
                     binding.LetterP.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -534,6 +546,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('R',true)
+                    connectedThread.write("R".toByteArray())
                     binding.LetterR.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -546,6 +559,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('S',true)
+                    connectedThread.write("S".toByteArray())
                     binding.LetterS.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -558,6 +572,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('T',true)
+                    connectedThread.write("T".toByteArray())
                     binding.LetterT.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -570,6 +585,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('V',true)
+                    connectedThread.write("V".toByteArray())
                     binding.LetterV.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -582,6 +598,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('W',true)
+                    connectedThread.write("W".toByteArray())
                     binding.LetterW.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -594,6 +611,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('X',true)
+                    connectedThread.write("X".toByteArray())
                     binding.LetterX.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
@@ -606,6 +624,7 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 2) {
                     checkLetter('Z',true)
+                    connectedThread.write("Z".toByteArray())
                     binding.LetterZ.isEnabled = false
                 } else if ((activity as MainActivity).phaseNumber == 1) {
                     toast.show()
