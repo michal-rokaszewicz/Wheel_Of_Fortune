@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.Toast
+import androidx.core.text.isDigitsOnly
 import androidx.navigation.Navigation
 import com.example.myapplication00.databinding.FragmentSecondScreenBinding
 import java.io.File
@@ -80,9 +81,10 @@ class SecondScreenFragment : Fragment() {
     var word: String = ""
     var missedLetters = ""
 
-    var chosenWords: List<String> = emptyList()
+    var chosenWords: MutableList<String> = mutableListOf()
 
     var round = 1
+    var oNumber: Int = 0
 
     //assigning file paths
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -108,7 +110,6 @@ class SecondScreenFragment : Fragment() {
         handler = Handler()
 
         runnable = Runnable {
-
                 if((activity as MainActivity).money > (activity as MainActivity).opponentMoney && (activity as MainActivity).endGame) {
                     connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
                     popUp("Brawo zdobyłeś więcej pieniedzy! Wygrywasz ${(activity as MainActivity).money}$")
@@ -121,18 +122,17 @@ class SecondScreenFragment : Fragment() {
                     Navigation.findNavController(binding.root).navigate(action)
                 }
 
-                if(round + 1 == (activity as MainActivity).round){
+                if(round + 1 == (activity as MainActivity).round && oNumber != (activity as MainActivity).wordNumber){
                     missedLetters = ""
                     moneyCache = 0
                     binding.roundNumberText.text = ("Runda ${(activity as MainActivity).round}")
-                    Handler().postDelayed({
                         if((activity as MainActivity).roundPop) {
                             popUp("Runda ${(activity as MainActivity).round}!")
                             (activity as MainActivity).roundPop = false
                         }
                         readWord((activity as MainActivity).wordNumber)
                         round++
-                        resetLetterButtonsColor()}, 1500)
+                        resetLetterButtonsColor()
                 }
             if(isRunning) {
                 if ((activity as MainActivity).phaseNumber == 1) {
@@ -274,7 +274,7 @@ class SecondScreenFragment : Fragment() {
 
         //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
-            Toast.makeText(this.context, "$word", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this.context, "$word", Toast.LENGTH_SHORT).show()
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
@@ -345,11 +345,11 @@ class SecondScreenFragment : Fragment() {
                 number -= 1
         }
         while (chosenWords.contains(text[number])) {
+            number = Random.nextInt(0, text.size - 1)
             if (number != 0) {
                 if (number % 2 != 0)
                     number -= 1
             }
-            number = Random.nextInt(0, text.size - 1)
         }
 
         if (mNumber != -1){
@@ -366,9 +366,11 @@ class SecondScreenFragment : Fragment() {
                 underlines += " _ "
         }
 
-        chosenWords.plus(word)
+        chosenWords.add(word)
         binding.category.text = text[number + 1]
         binding.word.text = underlines
+        oNumber = number
+
         return number
     }
 
@@ -751,7 +753,7 @@ class SecondScreenFragment : Fragment() {
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
 
-                    Toast.makeText(this@SecondScreenFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@SecondScreenFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
 
                     if(receivedMessage == "StartGame"){
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
@@ -768,7 +770,7 @@ class SecondScreenFragment : Fragment() {
                     }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
                         (activity as MainActivity).opponentLetters += receivedMessage
 
-                    }else{
+                    }else if (receivedMessage.isDigitsOnly()){
                         (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
                 }

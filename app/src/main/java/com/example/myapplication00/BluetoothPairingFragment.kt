@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -177,7 +178,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
 
-                    Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
 
                     if(receivedMessage == "StartGame"){
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
@@ -194,7 +195,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
                         (activity as MainActivity).opponentLetters += receivedMessage
 
-                    }else{
+                    }else if (receivedMessage.isDigitsOnly()){
                         (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
                 }
