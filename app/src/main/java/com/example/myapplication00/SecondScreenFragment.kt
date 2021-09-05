@@ -108,6 +108,7 @@ class SecondScreenFragment : Fragment() {
         handler = Handler()
 
         runnable = Runnable {
+
                 if((activity as MainActivity).money > (activity as MainActivity).opponentMoney && (activity as MainActivity).endGame) {
                     connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
                     popUp("Brawo zdobyłeś więcej pieniedzy! Wygrywasz ${(activity as MainActivity).money}$")
@@ -273,10 +274,13 @@ class SecondScreenFragment : Fragment() {
 
         //guessing word functionality on clicking button
         binding.wordPushButton.setOnClickListener {
+            Toast.makeText(this.context, "$word", Toast.LENGTH_SHORT).show()
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
                         if ((activity as MainActivity).round != 5) {
+                            popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${(activity as MainActivity).money}$")
+                            Handler().postDelayed({ popUp("RUNDA ${(activity as MainActivity).round}") }, 2500)
                             connectedThread.write("NextRound".toByteArray())
                             var wordNumber = readWord()
                             Handler().postDelayed({connectedThread.write(wordNumber.toString().toByteArray())}, 800)
@@ -287,8 +291,6 @@ class SecondScreenFragment : Fragment() {
                             (activity as MainActivity).phaseNumber = 1
                             moneyCache = 0
                             resetLetterButtonsColor()
-                            Handler().postDelayed({popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${(activity as MainActivity).money}$")}, 1000)
-                            Handler().postDelayed({ popUp("RUNDA ${(activity as MainActivity).round}") }, 3500)
                             binding.roundNumberText.text = "Runda ${(activity as MainActivity).round}"
                         } else if ((activity as MainActivity).round == 5) {
                             connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
@@ -748,6 +750,27 @@ class SecondScreenFragment : Fragment() {
                     val readBuf = msg.obj as ByteArray
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
+
+                    Toast.makeText(this@SecondScreenFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+
+                    if(receivedMessage == "StartGame"){
+                        val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
+                        Navigation.findNavController(binding.root).navigate(action)
+                    }else if(receivedMessage == "YourTurn"){
+                        (activity as MainActivity).phaseNumber = 1
+                    }else if(receivedMessage == "NextRound"){
+                        (activity as MainActivity).roundPop = true
+                        (activity as MainActivity).round++
+                        (activity as MainActivity).opponentLetters = ""
+                    }else if(receivedMessage[0] == '$'){
+                        (activity as MainActivity).opponentMoney = receivedMessage.substring(1, receivedMessage.length - 1).toInt()
+                        (activity as MainActivity).endGame = true
+                    }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
+                        (activity as MainActivity).opponentLetters += receivedMessage
+
+                    }else{
+                        (activity as MainActivity).wordNumber = receivedMessage.toInt()
+                    }
                 }
                 MESSAGE_TOAST -> {
                 }

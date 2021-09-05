@@ -193,6 +193,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                         (activity as MainActivity).endGame = true
                     }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
                         (activity as MainActivity).opponentLetters += receivedMessage
+
                     }else{
                         (activity as MainActivity).wordNumber = receivedMessage.toInt()
                     }
