@@ -184,6 +184,10 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                         Navigation.findNavController(binding.root).navigate(action)
                     }else if(receivedMessage == "YourTurn"){
                         (activity as MainActivity).phaseNumber = 1
+                    }else if(receivedMessage == "NextRound"){
+                        //(activity as MainActivity).roundPop = true
+                        (activity as MainActivity).round++
+                        (activity as MainActivity).opponentLetters = ""
                     }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
                         (activity as MainActivity).opponentLetters += receivedMessage
                     }else{

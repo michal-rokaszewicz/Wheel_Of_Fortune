@@ -81,10 +81,9 @@ class SecondScreenFragment : Fragment() {
     var word: String = ""
     var missedLetters = ""
 
-    //variable which indicates rounds of game (there are 5 rounds total)
-    var round = 1
-
     var chosenWords: List<String> = emptyList()
+
+    var round = 1
 
     //assigning file paths
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
@@ -111,6 +110,18 @@ class SecondScreenFragment : Fragment() {
 
         runnable = Runnable {
             if(isRunning) {
+                if(round + 1 == (activity as MainActivity).round){
+
+                    binding.roundNumberText.text = ("Runda ${(activity as MainActivity).round}")
+                    Handler().postDelayed({
+                        if((activity as MainActivity).roundPop) {
+                            popUp("Runda ${(activity as MainActivity).round}!")
+                            (activity as MainActivity).roundPop = false
+                        }
+                        readWord((activity as MainActivity).wordNumber)
+                        round++
+                        resetLetterButtonsColor()}, 1000)
+                }
                 if ((activity as MainActivity).phaseNumber == 1) {
                     popUp("Twoja tura, zakręć kołem fortuny!")
                     for (i in (activity as MainActivity).opponentLetters) {
@@ -144,7 +155,7 @@ class SecondScreenFragment : Fragment() {
         }
         handler.postDelayed(runnable, 100)
 
-        if (round == 1) {
+        if ((activity as MainActivity).round == 1) {
             readWord((activity as MainActivity).wordNumber)
             if (!(activity as MainActivity).isHost) {
                 (activity as MainActivity).phaseNumber = 4
@@ -183,7 +194,7 @@ class SecondScreenFragment : Fragment() {
             Navigation.findNavController(binding.root).navigate(action)
         }
 
-        if (round != 1 && (activity as MainActivity).phaseNumber != 4) {
+        if ((activity as MainActivity).round != 1 && (activity as MainActivity).phaseNumber != 4) {
             popUp("Zakręć kołem fortuny!")
         }
 
@@ -253,27 +264,32 @@ class SecondScreenFragment : Fragment() {
             if((activity as MainActivity).phaseNumber != 4) {
                 if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
-                        if (round != 5) {
+                        if ((activity as MainActivity).round != 5) {
                             popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
+                            (activity as MainActivity).round++
                             round++
                             missedLetters = ""
+                            (activity as MainActivity).opponentLetters = ""
+                            connectedThread.write("NextRound".toByteArray())
                             (activity as MainActivity).phaseNumber = 1
-                            //readWord()
+                            var wordNumber = readWord()
+                            Handler().postDelayed({connectedThread.write(wordNumber.toString().toByteArray())}, 500)
                             moneyCache = 0
                             resetLetterButtonsColor()
-                            Handler().postDelayed({ popUp("RUNDA ${round}") }, 2500)
-                            binding.roundNumberText.text = "Runda ${round}"
-                        } else if (round == 5) {
+                            Handler().postDelayed({ popUp("RUNDA ${(activity as MainActivity).round}") }, 2500)
+                            binding.roundNumberText.text = "Runda ${(activity as MainActivity).round}"
+                        } else if ((activity as MainActivity).round == 5) {
                             popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
                             val action = R.id.action_secondScreenFragment_to_firstScreenFragment
                             Navigation.findNavController(binding.root).navigate(action)
                         }
                     } else {
                         popUp("Niestety nie udało ci się zgadnąć hasła!")
+                        connectedThread.write("YourTurn".toByteArray())
                         (activity as MainActivity).phaseNumber = 4
                     }
                     binding.guessWord.text.clear()
-                    (activity as MainActivity).phaseNumber = 1
+                    //(activity as MainActivity).phaseNumber = 1
                 } else {
                     val toast = Toast.makeText(
                         this.context,

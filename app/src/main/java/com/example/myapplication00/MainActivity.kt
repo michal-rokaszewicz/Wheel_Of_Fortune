@@ -40,6 +40,12 @@ class MainActivity : AppCompatActivity() {
     var phaseNumber = 1
     var opponentLetters = ""
 
+    //variable which indicates rounds of game (there are 5 rounds total)
+    var round = 1
+
+    var roundPop = true
+
+
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val folder = File(path, "/KoloFortuny")
     val file = File(folder, "/words.txt")
