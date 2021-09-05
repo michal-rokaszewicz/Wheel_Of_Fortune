@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
     var round = 1
 
     var roundPop = true
+    var money: Int = 0
+    var opponentMoney: Int = 0
+    var endGame = false
 
 
     val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)

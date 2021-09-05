@@ -177,7 +177,7 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     val readMessage = String(readBuf, 0, msg.arg1)
                     receivedMessage = readMessage
 
-                    //Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@BluetoothPairingFragment.context, receivedMessage, Toast.LENGTH_SHORT).show()
 
                     if(receivedMessage == "StartGame"){
                         val action = R.id.action_bluetoothPairingFragment_to_secondScreenFragment
@@ -185,9 +185,12 @@ class BluetoothPairingFragment: Fragment(), AdapterExample.OnItemClickListener{
                     }else if(receivedMessage == "YourTurn"){
                         (activity as MainActivity).phaseNumber = 1
                     }else if(receivedMessage == "NextRound"){
-                        //(activity as MainActivity).roundPop = true
+                        (activity as MainActivity).roundPop = true
                         (activity as MainActivity).round++
                         (activity as MainActivity).opponentLetters = ""
+                    }else if(receivedMessage[0] == '$'){
+                        (activity as MainActivity).opponentMoney = receivedMessage.substring(1, receivedMessage.length - 1).toInt()
+                        (activity as MainActivity).endGame = true
                     }else if(receivedMessage >= "A" && receivedMessage <= "Z"){
                         (activity as MainActivity).opponentLetters += receivedMessage
                     }else{

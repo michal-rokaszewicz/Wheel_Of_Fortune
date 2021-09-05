@@ -66,7 +66,6 @@ class SecondScreenFragment : Fragment() {
         800
     )
     var wheelValue: Int = 1000
-    var money: Int = 0
     var moneyCache: Int = 0
 
     var receivedMessage: String = ""
@@ -109,9 +108,21 @@ class SecondScreenFragment : Fragment() {
         handler = Handler()
 
         runnable = Runnable {
-            if(isRunning) {
-                if(round + 1 == (activity as MainActivity).round){
+                if((activity as MainActivity).money > (activity as MainActivity).opponentMoney && (activity as MainActivity).endGame) {
+                    connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
+                    popUp("Brawo zdobyłeś więcej pieniedzy! Wygrywasz ${(activity as MainActivity).money}$")
+                    val action = R.id.action_secondScreenFragment_to_firstScreenFragment
+                    Navigation.findNavController(binding.root).navigate(action)
+                }else if((activity as MainActivity).endGame){
+                    popUp("Przegrywasz! Przeciwnik zdobył więcej pieniędzy!")
+                    connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
+                    val action = R.id.action_secondScreenFragment_to_firstScreenFragment
+                    Navigation.findNavController(binding.root).navigate(action)
+                }
 
+                if(round + 1 == (activity as MainActivity).round){
+                    missedLetters = ""
+                    moneyCache = 0
                     binding.roundNumberText.text = ("Runda ${(activity as MainActivity).round}")
                     Handler().postDelayed({
                         if((activity as MainActivity).roundPop) {
@@ -120,8 +131,9 @@ class SecondScreenFragment : Fragment() {
                         }
                         readWord((activity as MainActivity).wordNumber)
                         round++
-                        resetLetterButtonsColor()}, 1000)
+                        resetLetterButtonsColor()}, 1500)
                 }
+            if(isRunning) {
                 if ((activity as MainActivity).phaseNumber == 1) {
                     popUp("Twoja tura, zakręć kołem fortuny!")
                     for (i in (activity as MainActivity).opponentLetters) {
@@ -229,9 +241,9 @@ class SecondScreenFragment : Fragment() {
                             (activity as MainActivity).phaseNumber = 2
                             moneyCache += wheelValue
                         } else if (wheelValue == 0) {
-                            money = 0
+                            (activity as MainActivity).money = 0
                             moneyCache = 0
-                            binding.moneyAccount.text = "Stan konta: ${money}$"
+                            binding.moneyAccount.text = "Stan konta: ${(activity as MainActivity).money}$"
                             popUp("Niestety zbankrutowałeś! Tracisz wszystkie środki")
                         } else if (wheelValue == 1) {
                             moneyCache = 0
@@ -265,23 +277,21 @@ class SecondScreenFragment : Fragment() {
                 if ((activity as MainActivity).phaseNumber == 3) {
                     if (binding.guessWord.text.toString().uppercase() == word) {
                         if ((activity as MainActivity).round != 5) {
-                            popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${money}$")
+                            connectedThread.write("NextRound".toByteArray())
+                            var wordNumber = readWord()
+                            Handler().postDelayed({connectedThread.write(wordNumber.toString().toByteArray())}, 800)
                             (activity as MainActivity).round++
                             round++
                             missedLetters = ""
                             (activity as MainActivity).opponentLetters = ""
-                            connectedThread.write("NextRound".toByteArray())
                             (activity as MainActivity).phaseNumber = 1
-                            var wordNumber = readWord()
-                            Handler().postDelayed({connectedThread.write(wordNumber.toString().toByteArray())}, 500)
                             moneyCache = 0
                             resetLetterButtonsColor()
-                            Handler().postDelayed({ popUp("RUNDA ${(activity as MainActivity).round}") }, 2500)
+                            Handler().postDelayed({popUp("Brawo zgadłeś! Hasło to ${word} wygrywasz: ${(activity as MainActivity).money}$")}, 1000)
+                            Handler().postDelayed({ popUp("RUNDA ${(activity as MainActivity).round}") }, 3500)
                             binding.roundNumberText.text = "Runda ${(activity as MainActivity).round}"
                         } else if ((activity as MainActivity).round == 5) {
-                            popUp("Brawo odgadłeś wszystkie hasła! wygrywasz ${money}$")
-                            val action = R.id.action_secondScreenFragment_to_firstScreenFragment
-                            Navigation.findNavController(binding.root).navigate(action)
+                            connectedThread.write("$${(activity as MainActivity).money}".toByteArray())
                         }
                     } else {
                         popUp("Niestety nie udało ci się zgadnąć hasła!")
@@ -327,14 +337,17 @@ class SecondScreenFragment : Fragment() {
     fun readWord(mNumber: Int = -1):Int {
         val bufferedReader = file.bufferedReader()
         val text: List<String> = bufferedReader.readLines()
-
         var number: Int = Random.nextInt(0, text.size - 1)
-        while (chosenWords.contains(text[number])) {
-            number = Random.nextInt(0, text.size - 1)
-        }
         if (number != 0) {
             if (number % 2 != 0)
                 number -= 1
+        }
+        while (chosenWords.contains(text[number])) {
+            if (number != 0) {
+                if (number % 2 != 0)
+                    number -= 1
+            }
+            number = Random.nextInt(0, text.size - 1)
         }
 
         if (mNumber != -1){
@@ -410,8 +423,8 @@ class SecondScreenFragment : Fragment() {
             binding.word.text = totalText.toString()
             if(pop)
                 popUp("Brawo! Zgadłeś spółgłoskę, kwota: ${moneyCache}$ ląduje na twoim koncie!")
-            money += moneyCache
-            binding.moneyAccount.text = "Stan konta: ${money}$"
+            (activity as MainActivity).money += moneyCache
+            binding.moneyAccount.text = "Stan konta: ${(activity as MainActivity).money}$"
             moneyCache = 0
             if (pop)
                 (activity as MainActivity).phaseNumber = 3
